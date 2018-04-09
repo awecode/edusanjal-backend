@@ -1,0 +1,6 @@
+-r base.txt
+
+django-debug-toolbar
+ipdb
+fabric3
+django-extensions
