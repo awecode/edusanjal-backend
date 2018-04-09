@@ -37,3 +37,5 @@ TEMPLATES = [{
         'context_processors': CONTEXT_PROCESSORS,
         'loaders': TEMPLATE_LOADERS,
         'string_if_invalid': '<< MISSING VARIABLE "%s" >>'}}]
+
+ADMIN_URL = 'admin/'
