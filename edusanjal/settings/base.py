@@ -3,9 +3,13 @@ import os
 PROJECT_ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 INSTALLED_APPS = [
+    # For overriding templates
+    'django.contrib.auth',
+    'apps.users',
+
     'jet',
     'django.contrib.admin',
-    'django.contrib.auth',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -16,7 +20,7 @@ INSTALLED_APPS = [
     'apps.program',
     'apps.institute',
     'apps.media',
-    'apps.users',
+
 ]
 
 MIDDLEWARE = [
