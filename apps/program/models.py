@@ -30,7 +30,7 @@ class Board(SlugModel):
 
 
 class BoardImage(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='images')
     name = models.CharField(max_length=255)
     file = VersatileImageField(upload_to='board_images/')
 
@@ -39,7 +39,7 @@ class BoardImage(models.Model):
 
 
 class BoardDocument(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='documents')
     name = models.CharField(max_length=255)
     file = VersatileImageField(upload_to='board_documents/')
 
@@ -58,6 +58,21 @@ class Level(SlugModel):
 
 class Council(SlugModel):
     description = models.TextField(blank=True, null=True)
+
+
+class CouncilImage(models.Model):
+    council = models.ForeignKey(Council, on_delete=models.CASCADE, related_name='images')
+    name = models.CharField(max_length=255)
+    file = VersatileImageField(upload_to='council_images/')
+
+    def __str__(self):
+        return self.name
+
+
+class CouncilDocument(models.Model):
+    council = models.ForeignKey(Council, on_delete=models.CASCADE, related_name='documents')
+    name = models.CharField(max_length=255)
+    file = VersatileImageField(upload_to='council_documents/')
 
 
 class Program(SlugModel):

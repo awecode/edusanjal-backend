@@ -32,7 +32,8 @@ class AdmissionProgramInline(admin.TabularInline):
     model = Program.admissions.through
     verbose_name = 'Program'
     verbose_name_plural = 'Programs'
-    
+
+
 class AdmissionInstituteInline(admin.TabularInline):
     model = Institute.admissions.through
     verbose_name = 'Institute'
@@ -44,11 +45,21 @@ class AdmissionAdmin(admin.ModelAdmin):
     exclude = ['programs', 'institutes']
 
 
+class InstituteAwardInline(admin.TabularInline):
+    model = InstituteAward
+    verbose_name = 'Institute'
+    verbose_name_plural = 'Institutes'
+
+
+class AwardAdmin(admin.ModelAdmin):
+    inlines = [InstituteAwardInline, ]
+
+
 admin.site.register(Institute, InstituteAdmin)
 
 admin.site.register(Personnel)
 admin.site.register(Designation)
-admin.site.register(Award)
+admin.site.register(Award, AwardAdmin)
 admin.site.register(Feature)
 admin.site.register(Membership)
 admin.site.register(Admission, AdmissionAdmin)

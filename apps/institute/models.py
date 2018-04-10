@@ -70,7 +70,7 @@ class Institute(SlugModel):
 
 
 class InstituteImage(models.Model):
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='images')
     name = models.CharField(max_length=255)
     file = VersatileImageField(upload_to='institute_images/')
 
@@ -79,7 +79,7 @@ class InstituteImage(models.Model):
 
 
 class InstituteDocument(models.Model):
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='documents')
     name = models.CharField(max_length=255)
     file = VersatileImageField(upload_to='institute_documents/')
 
