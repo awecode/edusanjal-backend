@@ -5,7 +5,6 @@ from versatileimagefield.fields import VersatileImageField
 
 from edusanjal.lib.slug import SlugModel
 from .nepal import DISTRICT_PAIRS
-from ..media.models import Image, Document
 from ..program.models import Board, Program
 
 
@@ -65,8 +64,23 @@ class Institute(SlugModel):
     youtube = models.URLField(blank=True, null=True)
     video_link = models.URLField(blank=True, null=True)
 
-    images = models.ManyToManyField(Image, blank=True)
-    documents = models.ManyToManyField(Document, blank=True)
+
+class InstituteImage(models.Model):
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    file = VersatileImageField(upload_to='institute_images/')
+
+    def __str__(self):
+        return self.name
+
+
+class InstituteDocument(models.Model):
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    file = VersatileImageField(upload_to='institute_documents/')
+
+    def __str__(self):
+        return self.name
 
 
 class InstituteAward(models.Model):

@@ -4,11 +4,13 @@ from django.db import models
 from versatileimagefield.fields import VersatileImageField
 
 from edusanjal.lib.slug import SlugModel
-from ..media.models import Image, Document
 
 
 class Faculty(SlugModel):
     pass
+
+    class Meta:
+        verbose_name_plural = 'Faculties'
 
 
 class Board(SlugModel):
@@ -25,8 +27,24 @@ class Board(SlugModel):
     description = models.TextField()
     salient_features = models.TextField(blank=True, null=True)
     international = models.BooleanField(default=False)
-    images = models.ManyToManyField(Image, blank=True)
-    documents = models.ManyToManyField(Document, blank=True)
+
+
+class BoardImage(models.Model):
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    file = VersatileImageField(upload_to='board_images/')
+
+    def __str__(self):
+        return self.name
+
+
+class BoardDocument(models.Model):
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    file = VersatileImageField(upload_to='board_documents/')
+
+    def __str__(self):
+        return self.name
 
 
 class Discipline(SlugModel):

@@ -19,7 +19,6 @@ INSTALLED_APPS = [
 
     'apps.program',
     'apps.institute',
-    'apps.media',
 
 ]
 
