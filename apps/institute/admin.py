@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Institute
+
+
+class InstituteAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(Institute, InstituteAdmin)

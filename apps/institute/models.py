@@ -39,7 +39,7 @@ class Institute(models.Model):
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
     code = models.CharField(max_length=10, blank=True, null=True)
-    logo = VersatileImageField(upload_to='institutes/')
+    logo = VersatileImageField(upload_to='institutes/', blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     district = models.CharField(max_length=50, choices=DISTRICT_PAIRS, blank=True, null=True)
     phone = ArrayField(models.CharField(max_length=100, blank=True, null=True), blank=True, null=True)
@@ -53,7 +53,7 @@ class Institute(models.Model):
     scholarship_information = models.TextField(blank=True, null=True)
     ugc_accredition = models.BooleanField(default=False)
     published = models.BooleanField(default=True)
-    verified = models.BooleanField(default=True)
+    verified = models.BooleanField(default=False)
 
     has_building = models.BooleanField(default=False, verbose_name='Does the college own its building?')
     no_of_buildings = models.PositiveSmallIntegerField(blank=True, null=True)
