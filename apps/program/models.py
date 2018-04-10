@@ -68,8 +68,8 @@ class Program(models.Model):
     salient_features = models.TextField(blank=True, null=True)
     curricular_stucture = models.TextField(blank=True, null=True)
     admission_criteria = models.TextField(blank=True, null=True)
-    published = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
+    published = models.BooleanField(default=True)
     disciplines = models.ManyToManyField(Discipline, blank=True, related_name='programs')
 
     # TODO 

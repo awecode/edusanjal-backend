@@ -114,3 +114,41 @@ class InstitutePersonnel(models.Model):
     designation = models.ForeignKey(Designation, on_delete=models.CASCADE)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     message = models.TextField(blank=True, null=True)
+
+
+class Admission(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField()
+    programs = models.ManyToManyField(Program, blank=True, related_name='admissions')
+    institutes = models.ManyToManyField(Institute, blank=True, related_name='admissions')
+    description = models.TextField()
+    starts_on = models.DateField(blank=True, null=True)
+    ends_on = models.DateField(blank=True, null=True)
+    entrance_exam_date = models.DateField(blank=True, null=True)
+
+
+class ScholarshipCategory(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField()
+
+
+class Scholarship(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField()
+    starts_on = models.DateField(blank=True, null=True)
+    ends_on = models.DateField(blank=True, null=True)
+    categories = models.ManyToManyField(ScholarshipCategory)
+    institutes = models.ManyToManyField(Institute, blank=True)
+
+
+class Ranking(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField()
+    description = models.TextField()
+
+
+class Rank(models.Model):
+    rank = models.ForeignKey(Ranking, on_delete=models.CASCADE)
+    position = models.PositiveSmallIntegerField(default=1)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    remarks = models.CharField(max_length=255, blank=True, null=True)
