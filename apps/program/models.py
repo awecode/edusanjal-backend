@@ -16,7 +16,7 @@ class Board(SlugModel):
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
     address = models.TextField(blank=True, null=True)
-    logo = VersatileImageField(upload_to='boards/')
+    logo = VersatileImageField(upload_to='boards/', blank=True, null=True)
     phone = ArrayField(models.CharField(max_length=100, blank=True, null=True), blank=True, null=True)
     email = ArrayField(models.EmailField(blank=True, null=True), blank=True, null=True)
     website = models.URLField(blank=True, null=True)
