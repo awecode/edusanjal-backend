@@ -3,6 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from versatileimagefield.fields import VersatileImageField
 
+from edusanjal.lib.model_mixins import SlugModel
 from .nepal import DISTRICT_PAIRS
 from ..media.models import Image, Document
 from ..program.models import Board, Program
@@ -26,15 +27,11 @@ INSTITUTE_TYPES = (
 )
 
 
-class Award(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Award(SlugModel):
     description = models.TextField()
 
 
-class Institute(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Institute(SlugModel):
     short_name = models.CharField(max_length=15, blank=True, null=True)
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
@@ -116,9 +113,7 @@ class InstitutePersonnel(models.Model):
     message = models.TextField(blank=True, null=True)
 
 
-class Admission(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Admission(SlugModel):
     programs = models.ManyToManyField(Program, blank=True, related_name='admissions')
     institutes = models.ManyToManyField(Institute, blank=True, related_name='admissions')
     description = models.TextField()
@@ -132,18 +127,14 @@ class ScholarshipCategory(models.Model):
     slug = models.SlugField()
 
 
-class Scholarship(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Scholarship(SlugModel):
     starts_on = models.DateField(blank=True, null=True)
     ends_on = models.DateField(blank=True, null=True)
     categories = models.ManyToManyField(ScholarshipCategory)
     institutes = models.ManyToManyField(Institute, blank=True)
 
 
-class Ranking(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Ranking(SlugModel):
     description = models.TextField()
 
 

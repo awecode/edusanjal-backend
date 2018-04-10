@@ -3,17 +3,15 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from versatileimagefield.fields import VersatileImageField
 
+from edusanjal.lib.model_mixins import SlugModel
 from ..media.models import Image, Document
 
 
-class Faculty(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Faculty(SlugModel):
+    pass
 
 
-class Board(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Board(SlugModel):
     short_name = models.CharField(max_length=15, blank=True, null=True)
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
@@ -31,28 +29,20 @@ class Board(models.Model):
     documents = models.ManyToManyField(Document, blank=True)
 
 
-class Discipline(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Discipline(SlugModel):
     description = models.TextField(blank=True, null=True)
 
 
-class Level(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Level(SlugModel):
     order = models.PositiveSmallIntegerField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
 
-class Council(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Council(SlugModel):
     description = models.TextField(blank=True, null=True)
 
 
-class Program(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+class Program(SlugModel):
     full_name = models.CharField(max_length=255, blank=True, null=True)
     short_name = models.CharField(max_length=255, blank=True, null=True)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
