@@ -1,0 +1,6 @@
+---
+- config:
+    - testset: "Institute API Test"
+- test: 
+    - name: "Listing"
+    - url: "/institutes/"
