@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from versatileimagefield.fields import VersatileImageField
 
-from edusanjal.lib.model_mixins import SlugModel
+from edusanjal.lib.slug import SlugModel
 from ..media.models import Image, Document
 
 

@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from versatileimagefield.fields import VersatileImageField
 
-from edusanjal.lib.model_mixins import SlugModel
+from edusanjal.lib.slug import SlugModel
 from .nepal import DISTRICT_PAIRS
 from ..media.models import Image, Document
 from ..program.models import Board, Program
@@ -48,7 +48,7 @@ class Institute(SlugModel):
     salient_features = models.TextField(blank=True, null=True)
     admission_guidelines = models.TextField(blank=True, null=True)
     scholarship_information = models.TextField(blank=True, null=True)
-    ugc_accredition = models.BooleanField(default=False)
+    ugc_accredition = models.BooleanField(default=False, verbose_name='UGC Accredition')
     published = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
 
