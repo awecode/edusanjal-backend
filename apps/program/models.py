@@ -41,7 +41,7 @@ class BoardImage(models.Model):
 class BoardDocument(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='documents')
     name = models.CharField(max_length=255)
-    file = VersatileImageField(upload_to='board_documents/')
+    file = models.FileField(upload_to='board_documents/')
 
     def __str__(self):
         return self.name
@@ -63,7 +63,7 @@ class Council(SlugModel):
 class CouncilImage(models.Model):
     council = models.ForeignKey(Council, on_delete=models.CASCADE, related_name='images')
     name = models.CharField(max_length=255)
-    file = VersatileImageField(upload_to='council_images/')
+    file = models.FileField(upload_to='council_images/')
 
     def __str__(self):
         return self.name

@@ -81,7 +81,7 @@ class InstituteImage(models.Model):
 class InstituteDocument(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='documents')
     name = models.CharField(max_length=255)
-    file = VersatileImageField(upload_to='institute_documents/')
+    file = models.FileField(upload_to='institute_documents/')
 
     def __str__(self):
         return self.name
