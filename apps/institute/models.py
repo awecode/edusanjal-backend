@@ -88,7 +88,7 @@ class InstituteProgram(models.Model):
                                             null=True)
     fee = models.IntegerField(blank=True, null=True)
     seats = models.PositiveSmallIntegerField(blank=True, null=True)
-    time_slot = models.CharField(blank=True, null=True)
+    time_slot = models.CharField(max_length=255, blank=True, null=True)
 
 
 class Feature(models.Model):
@@ -98,7 +98,7 @@ class Feature(models.Model):
 
 
 MEMBERSHIPS = (
-    ('Premium', 'Premium')
+    ('Premium', 'Premium'),
 )
 
 
