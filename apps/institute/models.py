@@ -97,8 +97,8 @@ class InstituteAward(models.Model):
 
 
 class InstituteProgram(models.Model):
-    program = models.ForeignKey(Program, on_delete=models.CASCADE)
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='institute_program')
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_program')
     year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                             null=True)
     fee = models.IntegerField(blank=True, null=True)
