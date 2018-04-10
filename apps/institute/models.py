@@ -64,6 +64,10 @@ class Institute(SlugModel):
     youtube = models.URLField(blank=True, null=True)
     video_link = models.URLField(blank=True, null=True)
 
+    programs = models.ManyToManyField(Program, through='InstituteProgram', related_name='institutes')
+    awards = models.ManyToManyField(Award, through='InstituteAward', related_name='institutes')
+    personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
+
 
 class InstituteImage(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
