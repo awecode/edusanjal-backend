@@ -5,6 +5,8 @@ from django.conf.urls import include, url
 
 from .api_urls import urlpatterns as api_urlpatterns
 
+admin.site.site_header = 'Control Panel'
+
 urlpatterns = [
                   url(r'^jet/', include('jet.urls', 'jet')),
                   path(settings.ADMIN_URL, admin.site.urls),
