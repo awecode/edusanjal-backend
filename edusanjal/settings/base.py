@@ -52,6 +52,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'edusanjal.wsgi.application'
 
+AUTH_USER_MODEL = 'users.User'
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kathmandu'
 USE_I18N = True
