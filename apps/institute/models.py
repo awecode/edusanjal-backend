@@ -3,6 +3,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from versatileimagefield.fields import VersatileImageField
 
+from .nepal import DISTRICT_PAIRS
+from ..media.models import Image, Document
 from ..program.models import Board, Program
 
 
@@ -39,7 +41,7 @@ class Institute(models.Model):
     code = models.CharField(max_length=10, blank=True, null=True)
     logo = VersatileImageField(upload_to='institutes/')
     address = models.TextField(blank=True, null=True)
-    district = models.ForeignKey(District, blank=True, null=True, on_delete=models.SET_NULL)
+    district = models.CharField(max_length=50, choices=DISTRICT_PAIRS, blank=True, null=True)
     phone = ArrayField(models.CharField(max_length=100, blank=True, null=True), blank=True, null=True)
     email = ArrayField(models.EmailField(blank=True, null=True), blank=True, null=True)
     website = models.URLField(blank=True, null=True)
