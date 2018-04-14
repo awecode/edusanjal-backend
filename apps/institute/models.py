@@ -51,6 +51,7 @@ class Institute(SlugModel):
     ugc_accredition = models.BooleanField(default=False, verbose_name='UGC Accredition')
     published = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
+    type = models.CharField(max_length=20, choices=INSTITUTE_TYPES, default='Private')
 
     has_building = models.BooleanField(default=False, verbose_name='Does the college own its building?')
     no_of_buildings = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -70,6 +71,21 @@ class Institute(SlugModel):
     personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
 
     cover_image = VersatileImageField(blank=True, null=True, upload_to='institute_covers/')
+    
+    def __str__(self):
+        return self.name
+    
+    @property
+    def recent_awards(self):
+        return self.awards.order_by('-id')[:3]
+
+    @property
+    def level(self):
+        return 'College'
+
+    @property
+    def awards_count(self):
+        return self.awards.count()
 
 
 class InstituteImage(models.Model):
@@ -101,8 +117,8 @@ class InstituteAward(models.Model):
 
 
 class InstituteProgram(models.Model):
-    program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='institute_program')
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_program')
+    program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='institute_programs')
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_programs')
     year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                             null=True)
     fee = models.IntegerField(blank=True, null=True)
