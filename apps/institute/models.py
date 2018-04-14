@@ -28,6 +28,7 @@ INSTITUTE_TYPES = (
 
 class Award(SlugModel):
     description = models.TextField()
+    image = VersatileImageField(blank=True, null=True, upload_to='awards/')
 
 
 class Institute(SlugModel):
@@ -68,6 +69,8 @@ class Institute(SlugModel):
     awards = models.ManyToManyField(Award, through='InstituteAward', related_name='institutes')
     personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
 
+    cover_image = VersatileImageField(blank=True, null=True, upload_to='institute_covers/')
+
 
 class InstituteImage(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='images')
@@ -94,6 +97,7 @@ class InstituteAward(models.Model):
     year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                             null=True)
     description = models.TextField(blank=True, null=True)
+    image = VersatileImageField(blank=True, null=True, upload_to='institute_awards/')
 
 
 class InstituteProgram(models.Model):
