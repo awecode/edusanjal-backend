@@ -51,9 +51,16 @@ class Discipline(SlugModel):
     description = models.TextField(blank=True, null=True)
 
 
-class Level(SlugModel):
-    order = models.PositiveSmallIntegerField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+class Level:
+    LEVELS = (
+        (0, 'Pre-school'),
+        (1, 'Primary School'),
+        (2, 'Secondary School'),
+        (3, 'Bachelors'),
+        (4, 'Masters'),
+    )
+
+    LEVELS_PAIR = [(level[1], level[1]) for level in LEVELS]
 
 
 class Council(SlugModel):
@@ -78,7 +85,7 @@ class CouncilDocument(models.Model):
 class Program(SlugModel):
     full_name = models.CharField(max_length=255, blank=True, null=True)
     short_name = models.CharField(max_length=255, blank=True, null=True)
-    level = models.ForeignKey(Level, on_delete=models.CASCADE)
+    level = models.CharField(max_length=30, choices=Level.LEVELS_PAIR)
     faculty = models.ForeignKey(Faculty, blank=True, null=True, on_delete=models.SET_NULL)
     board = models.ForeignKey(Board, blank=True, null=True, on_delete=models.SET_NULL)
     recognition = models.ForeignKey(Council, blank=True, null=True, on_delete=models.SET_NULL)
