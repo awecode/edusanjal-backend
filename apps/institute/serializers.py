@@ -7,25 +7,25 @@ from .models import Institute, Award, InstituteDocument, InstituteImage
 class AwardMinSerializer(serializers.ModelSerializer):
     class Meta:
         model = Award
-        fields = ('slug', 'name')
+        fields = ('id', 'slug', 'name')
 
 
 class InstituteDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstituteDocument
-        fields = ('name', 'file')
+        fields = ('id', 'name', 'file')
 
 
 class InstituteImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstituteImage
-        fields = ('name', 'file')
+        fields = ('id', 'name', 'file')
 
 
 class InstituteMinSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institute
-        fields = ('name', 'logo', 'slug', 'levels')
+        fields = ('id', 'name', 'logo', 'slug', 'levels')
 
 
 class InstituteDetailSerializer(serializers.ModelSerializer):
@@ -35,14 +35,13 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     images = InstituteDocumentSerializer(many=True)
     network_institutes = serializers.SerializerMethodField()
     programs = ProgramMinSerializer(many=True)
-    
+
     def get_network_institutes(self, obj):
         return InstituteMinSerializer(obj.network_institutes.prefetch_related('programs'), many=True).data
-    
 
     class Meta:
         model = Institute
         fields = (
-            'name', 'cover_image', 'logo', 'boards', 'description', 'recent_awards', 'awards_count', 'documents', 'established',
-            'address', 'district', 'type', 'phone', 'email', 'website', 'images', 'salient_features', 'admission_guidelines',
-            'scholarship_information', 'network_institutes', 'levels', 'programs')
+        'id', 'name', 'cover_image', 'logo', 'boards', 'description', 'recent_awards', 'awards_count', 'documents', 'established',
+        'address', 'district', 'type', 'phone', 'email', 'website', 'images', 'salient_features', 'admission_guidelines',
+        'scholarship_information', 'network_institutes', 'levels', 'programs')
