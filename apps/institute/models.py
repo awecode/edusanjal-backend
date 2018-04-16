@@ -71,17 +71,17 @@ class Institute(SlugModel):
     personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
 
     cover_image = VersatileImageField(blank=True, null=True, upload_to='institute_covers/')
-    
+
     def __str__(self):
         return self.name
-    
+
     @property
     def recent_awards(self):
         return self.awards.order_by('-id')[:3]
 
     @property
-    def level(self):
-        return 'College'
+    def levels(self):
+        return set([program.level for program in self.programs.all()])
 
     @property
     def awards_count(self):
