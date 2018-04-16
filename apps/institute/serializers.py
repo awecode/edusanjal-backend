@@ -33,8 +33,12 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     recent_awards = AwardMinSerializer(many=True)
     documents = InstituteDocumentSerializer(many=True)
     images = InstituteDocumentSerializer(many=True)
-    network_institutes = InstituteMinSerializer(many=True)
+    network_institutes = serializers.SerializerMethodField()
     programs = ProgramMinSerializer(many=True)
+    
+    def get_network_institutes(self, obj):
+        return InstituteMinSerializer(obj.network_institutes.prefetch_related('programs'), many=True).data
+    
 
     class Meta:
         model = Institute
