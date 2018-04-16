@@ -7,25 +7,25 @@ from .models import Institute, Award, InstituteDocument, InstituteImage
 class AwardMinSerializer(serializers.ModelSerializer):
     class Meta:
         model = Award
-        fields = ('id', 'slug', 'name')
+        fields = ('slug', 'name')
 
 
 class InstituteDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstituteDocument
-        fields = ('id', 'name', 'file')
+        fields = ('name', 'file')
 
 
 class InstituteImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstituteImage
-        fields = ('id', 'name', 'file')
+        fields = ('name', 'file')
 
 
 class InstituteMinSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institute
-        fields = ('id', 'name', 'logo', 'slug', 'levels')
+        fields = ('name', 'logo', 'slug', 'levels')
 
 
 class InstituteDetailSerializer(serializers.ModelSerializer):
@@ -42,6 +42,6 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institute
         fields = (
-        'id', 'name', 'cover_image', 'logo', 'boards', 'description', 'recent_awards', 'awards_count', 'documents', 'established',
+        'name', 'cover_image', 'logo', 'boards', 'description', 'recent_awards', 'awards_count', 'documents', 'established',
         'address', 'district', 'type', 'phone', 'email', 'website', 'images', 'salient_features', 'admission_guidelines',
         'scholarship_information', 'network_institutes', 'levels', 'programs')
