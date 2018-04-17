@@ -8,6 +8,8 @@ INTERNAL_IPS = ['127.0.0.1']
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, '..', 'media')
+MEDIA_URL = '/media/'
 
 DATABASES = {
     'default': {
@@ -39,3 +41,8 @@ TEMPLATES = [{
         'string_if_invalid': '<< MISSING VARIABLE "%s" >>'}}]
 
 ADMIN_URL = 'admin/'
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+    '127.0.0.1:3000'
+)
