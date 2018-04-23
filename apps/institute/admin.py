@@ -23,8 +23,14 @@ class DocumentInline(admin.TabularInline):
     verbose_name_plural = 'Documents'
 
 
+class InstitutePersonnelInline(admin.TabularInline):
+    model = InstitutePersonnel
+    verbose_name = 'Personnel'
+    verbose_name_plural = 'Personnels'
+
+
 class InstituteAdmin(admin.ModelAdmin):
-    inlines = [ImageInline, DocumentInline, InstituteProgramInline]
+    inlines = [ImageInline, DocumentInline, InstituteProgramInline, InstitutePersonnelInline]
     exclude = ['images', 'documents']
 
 

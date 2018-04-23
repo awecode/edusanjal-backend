@@ -13,10 +13,16 @@ class Personnel(models.Model):
     name = models.CharField(max_length=255)
     photo = VersatileImageField(upload_to='personnels/')
 
+    def __str__(self):
+        return self.name
+
 
 class Designation(models.Model):
     name = models.CharField(max_length=255)
     is_founder = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
 INSTITUTE_TYPES = (
@@ -147,7 +153,7 @@ class Membership(models.Model):
 class InstitutePersonnel(models.Model):
     personnel = models.ForeignKey(Personnel, on_delete=models.CASCADE)
     designation = models.ForeignKey(Designation, on_delete=models.CASCADE)
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_personnels')
     message = models.TextField(blank=True, null=True)
 
 

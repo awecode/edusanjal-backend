@@ -41,6 +41,6 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Institute
-        fields = ('name', 'slug', 'cover_image', 'logo', 'boards', 'description', 'recent_awards', 'awards_count', 'documents',
+        fields = ('name', 'slug', 'cover_image', 'logo', 'boards', 'verified', 'description', 'recent_awards', 'awards_count', 'documents',
                   'established', 'address', 'district', 'type', 'phone', 'email', 'website', 'images', 'salient_features',
-                  'admission_guidelines', 'scholarship_information', 'network_institutes', 'levels', 'programs')
+                  'admission_guidelines', 'scholarship_information', 'network_institutes', 'levels', 'programs', 'institute_personnels')

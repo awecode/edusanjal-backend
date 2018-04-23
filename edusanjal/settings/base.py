@@ -73,3 +73,8 @@ JET_CHANGE_FORM_SIBLING_LINKS = False
 CORS_ORIGIN_WHITELIST = (
     'edusanjal.com',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'edusanjal.lib.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2
+}
