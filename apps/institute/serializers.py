@@ -20,23 +20,11 @@ class InstituteDocumentSerializer(serializers.ModelSerializer):
 
 
 class InstituteImageSerializer(serializers.ModelSerializer):
-    # file = VersatileImageFieldSerializer(sizes=[
-    #     ('large', 'url'),
-    #     ('thumbnail', 'thumbnail__100x100'),
-    #     ('medium_square_crop', 'crop__400x400'),
-    #     ('small_square_crop', 'crop__50x50')
-    # ])
     url = serializers.SerializerMethodField()
 
     def get_url(self, obj):
         ret = build_versatileimagefield_url_set(obj.file, obj.sizes, self.context.get('request'))
         return ret
-
-    #     return VersatileImageFieldSerializer(obj.file, [
-    #     ('large', 'url'),
-    #     ('medium', 'crop__400x400'),
-    #     ('small', 'thumbnail__100x100')
-    # ]).data
 
     class Meta:
         model = InstituteImage
