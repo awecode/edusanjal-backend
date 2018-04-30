@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'versatileimagefield',
     'corsheaders',
 
     'apps.program',

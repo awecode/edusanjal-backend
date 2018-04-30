@@ -97,7 +97,28 @@ class Institute(SlugModel):
 class InstituteImage(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='images')
     name = models.CharField(max_length=255)
-    file = VersatileImageField(upload_to='institute_images/')
+    file = VersatileImageField(upload_to='institute_images/',
+                               width_field='width',
+                               height_field='height'
+                               )
+    height = models.PositiveIntegerField(
+        'Image Height',
+        blank=True,
+        null=True
+    )
+    width = models.PositiveIntegerField(
+        'Image Width',
+        blank=True,
+        null=True
+    )
+
+    @property
+    def sizes(self):
+        ret = [
+            ('full', 'url'),
+            ('small', 'crop__{}x{}'.format(int(self.width / 10), int(self.height / 10)))
+        ]
+        return ret
 
     def __str__(self):
         return self.name

@@ -15,6 +15,7 @@ class ImageInline(admin.TabularInline):
     model = InstituteImage
     verbose_name = 'Image'
     verbose_name_plural = 'Images'
+    readonly_fields = ('height', 'width')
 
 
 class DocumentInline(admin.TabularInline):
