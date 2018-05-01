@@ -1,9 +1,9 @@
-from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from versatileimagefield.fields import VersatileImageField
 
+from edusanjal.lib.models import PointModel
 from edusanjal.lib.slug import SlugModel
 from .nepal import DISTRICT_PAIRS
 from ..program.models import Board, Program
@@ -38,7 +38,7 @@ class Award(SlugModel):
     image = VersatileImageField(blank=True, null=True, upload_to='awards/')
 
 
-class Institute(SlugModel):
+class Institute(PointModel, SlugModel):
     short_name = models.CharField(max_length=15, blank=True, null=True)
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
@@ -77,8 +77,6 @@ class Institute(SlugModel):
     programs = models.ManyToManyField(Program, through='InstituteProgram', related_name='institutes')
     awards = models.ManyToManyField(Award, through='InstituteAward', related_name='institutes')
     personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
-
-    point = PointField(geography=True, srid=4326, blank=True, null=True)
 
     def __str__(self):
         return self.name
