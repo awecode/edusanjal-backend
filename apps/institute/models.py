@@ -113,11 +113,14 @@ class InstituteImage(models.Model):
     )
 
     @property
+    def thumb_height(self):
+        return int(self.height * 300 / self.width)
+
+    @property
     def sizes(self):
-        height = int(self.height*300/self.width)
         ret = [
             ('full', 'url'),
-            ('small', 'thumbnail__{}x{}'.format(300, height))
+            ('small', 'thumbnail__{}x{}'.format(300, self.thumb_height))
         ]
         return ret
 

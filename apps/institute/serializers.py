@@ -1,6 +1,4 @@
 from rest_framework import serializers
-# from versatileimagefield.serializers import VersatileImageFieldSerializer
-from versatileimagefield.serializers import VersatileImageFieldSerializer
 from versatileimagefield.utils import build_versatileimagefield_url_set
 
 from ..program.serializers import BoardMinSerializer, ProgramMinSerializer
