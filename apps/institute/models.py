@@ -1,3 +1,4 @@
+from django.contrib.gis.db.models import PointField
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -43,6 +44,7 @@ class Institute(SlugModel):
                                                    null=True)
     code = models.CharField(max_length=10, blank=True, null=True)
     logo = VersatileImageField(upload_to='institutes/', blank=True, null=True)
+    cover_image = VersatileImageField(blank=True, null=True, upload_to='institute_covers/')
     address = models.TextField(blank=True, null=True)
     district = models.CharField(max_length=50, choices=DISTRICT_PAIRS, blank=True, null=True)
     phone = ArrayField(models.CharField(max_length=100, blank=True, null=True), blank=True, null=True)
@@ -76,7 +78,7 @@ class Institute(SlugModel):
     awards = models.ManyToManyField(Award, through='InstituteAward', related_name='institutes')
     personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
 
-    cover_image = VersatileImageField(blank=True, null=True, upload_to='institute_covers/')
+    point = PointField(geography=True, srid=4326, blank=True, null=True)
 
     def __str__(self):
         return self.name
