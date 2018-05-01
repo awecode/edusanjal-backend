@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from .forms import InstituteForm
 from apps.program.models import Program
 from .models import Institute, Personnel, Designation, Award, InstituteAward, InstitutePersonnel, InstituteProgram, Feature, \
     Membership, Admission, ScholarshipCategory, Scholarship, Rank, Ranking, InstituteImage, InstituteDocument
@@ -31,6 +32,7 @@ class InstitutePersonnelInline(admin.TabularInline):
 
 
 class InstituteAdmin(admin.ModelAdmin):
+    form = InstituteForm
     inlines = [ImageInline, DocumentInline, InstituteProgramInline, InstitutePersonnelInline]
     exclude = ['images', 'documents']
 
