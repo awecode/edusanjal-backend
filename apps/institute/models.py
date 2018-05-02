@@ -82,6 +82,14 @@ class Institute(PointModel, SlugModel):
         return self.name
 
     @property
+    def sizes(self):
+        ret = [
+            ('full', 'url'),
+            ('small', 'crop__{}x{}'.format(100, 100))
+        ]
+        return ret
+
+    @property
     def recent_awards(self):
         return self.awards.order_by('-id')[:3]
 

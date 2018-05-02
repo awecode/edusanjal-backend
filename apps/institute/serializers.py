@@ -21,8 +21,7 @@ class InstituteImageSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
 
     def get_url(self, obj):
-        ret = build_versatileimagefield_url_set(obj.file, obj.sizes, self.context.get('request'))
-        return ret
+        return build_versatileimagefield_url_set(obj.file, obj.sizes, self.context.get('request'))
 
     class Meta:
         model = InstituteImage
@@ -30,6 +29,11 @@ class InstituteImageSerializer(serializers.ModelSerializer):
 
 
 class InstituteMinSerializer(serializers.ModelSerializer):
+    logo = serializers.SerializerMethodField()
+
+    def get_logo(self, obj):
+        return build_versatileimagefield_url_set(obj.logo, obj.sizes, self.context.get('request'))
+
     class Meta:
         model = Institute
         fields = ('name', 'logo', 'slug', 'levels')
@@ -44,7 +48,7 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     programs = ProgramMinSerializer(many=True)
 
     def get_network_institutes(self, obj):
-        return InstituteMinSerializer(obj.network_institutes.prefetch_related('programs'), many=True).data
+        return InstituteMinSerializer(obj.network_institutes.prefetch_related('programs'), many=True, context=self.context).data
 
     class Meta:
         model = Institute
