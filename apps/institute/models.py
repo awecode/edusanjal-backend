@@ -36,6 +36,7 @@ INSTITUTE_TYPES = (
 
 
 class Award(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     description = models.TextField()
     image = VersatileImageField(blank=True, null=True, upload_to='awards/')
 
@@ -202,9 +203,12 @@ class Admission(SlugModel):
 
 
 class ScholarshipCategory(models.Model):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
 
+    def __str__(self):
+        return self.name
 
 class Scholarship(SlugModel):
     starts_on = models.DateField(blank=True, null=True)
@@ -214,6 +218,7 @@ class Scholarship(SlugModel):
 
 
 class Ranking(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     description = models.TextField()
 
 

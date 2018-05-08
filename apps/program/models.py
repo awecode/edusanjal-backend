@@ -7,7 +7,7 @@ from edusanjal.lib.slug import SlugModel
 
 
 class Faculty(SlugModel):
-    pass
+    previous_db_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Faculties'

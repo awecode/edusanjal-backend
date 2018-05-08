@@ -12,6 +12,7 @@ from sqlalchemy import create_engine
 
 from apps.institute.models import Institute, Personnel, Designation, InstitutePersonnel, ScholarshipCategory, \
     Award, Ranking
+from apps.program.models import Faculty
 
 
 def get_set_value(obj, alchemy, arr):
@@ -63,12 +64,14 @@ class Command(BaseCommand):
         session = Session(engine)
 
         try:
+            _AbstractTitleSlug = Base.classes.college_abstracttitleslug
             _Designation = Base.classes.college_designation
             _Personnel = Base.classes.college_personnel
-            # _Zone = Base.classes.core_zone
-            # _Faculty = Base.classes.university_faculty
+            _ScholarshipCategory = Base.classes.college_scholarshipcategory
+            _Ranking = Base.classes.rank_ranking
+            _Award = Base.classes.college_award
+            _Faculty = Base.classes.college_faculty
             # _Level = Base.classes.course_level
-            # _ScholarshipCategory = Base.classes.scholarship_category
             # _UniversityCategory = Base.classes.university_category
             # _CollegeCategory = Base.classes.college_category
             # _Type = Base.classes.college_type
@@ -94,12 +97,14 @@ class Command(BaseCommand):
         except AttributeError as e:
             self.stdout.write("No table found named." + e[0])
 
+        abstract_title_slug = session.query(_AbstractTitleSlug)  # Mapping table
         designations = session.query(_Designation)  # Mapping table
         personnel = session.query(_Personnel)  # Mapping table
-        # zones = session.query(_Zone)  # Mapping table
-        # faculties = session.query(_Faculty)  # Mapping table
+        scholarship_categories = session.query(_ScholarshipCategory)  # Mapping table
+        rankings = session.query(_Ranking)  # Mapping table
+        awards = session.query(_Award)  # Mapping table
+        faculties = session.query(_Faculty)  # Mapping table
         # levels = session.query(_Level)  # Mapping table
-        # scholarship_categories = session.query(_ScholarshipCategory)  # Mapping table
         # university_categories = session.query(_UniversityCategory)  # Mapping table
         # college_categories = session.query(_CollegeCategory)  # Mapping table
         # types = session.query(_Type)  # Mapping table
@@ -112,13 +117,13 @@ class Command(BaseCommand):
         # careers = session.query(_Career)  # Mapping table
         # courses = session.query(_Course)  # Mapping table
         # colleges = session.query(_College)  # Mapping table
-        # advertisements = session.query(_Advertisement)  # Mapping table
+        # advertisements = session.query(_Advertisement)  # Mappin, g table
         # scholarships = session.query(_Scholarship)  # Mapping table
         # admissions = session.query(_Admission)  # Mapping table
         # vacancies = session.query(_Vacancy)  # Mapping table
         # events = session.query(_Event)  # Mapping table
         # news = session.query(_News)  # Mapping table
-        # rankings = session.query(_Ranking)  # Mapping table
+
         # ranks = session.query(_Rank)  # Mapping table
         # galleries = session.query(_Gallery)  # Mapping table
         # filers = session.query(_Filer)  # Mapping table
@@ -150,32 +155,59 @@ class Command(BaseCommand):
 
         self.stdout.write("Personnel imported")
 
-        # ###### Save Zone ###########
-        #
-        # self.stdout.write("Importing zones...")
-        # for zone in zones:
-        #     _zone, zone_created = Zone.objects.get_or_create(
-        #         previous_db_id=zone.id,
-        #         name=zone.name,
-        #         slug=zone.slug,
-        #     )
-        #
-        # self.stdout.write("Zone data imported")
-        #
-        # ###### Save Faculty ###########
-        #
-        # self.stdout.write("Importing faculties...")
-        # for faculty in faculties:
-        #     _faculty, faculty_created = Faculty.objects.get_or_create(
-        #         previous_db_id=faculty.id,
-        #         title=faculty.title,
-        #         slug=faculty.slug,
-        #     )
-        #     _faculty.created_on = faculty.created_on
-        #     _faculty.save()
-        #
-        # self.stdout.write("Faculty data imported")
-        #
+        ###### Save Scholarship Category ###########
+        self.stdout.write("Importing scholarship category...")
+        for scholarship_category in scholarship_categories:
+            _abstract_title_slug = abstract_title_slug.get(scholarship_category.abstracttitleslug_ptr_id)
+            _scholarship_category, scholarship_category_created = ScholarshipCategory.objects.get_or_create(
+                previous_db_id=_abstract_title_slug.id,
+                name=_abstract_title_slug.title,
+                slug=scholarship_category.slug,
+            )
+        self.stdout.write("Scholarship Category data imported")
+
+        ##### Save Ranking ###########
+
+        self.stdout.write("Importing ranking...")
+        ranking_count = rankings.count()
+
+        for cnt, ranking in enumerate(rankings):
+            try:
+                _ranking, _ranking_created = Ranking.objects.get_or_create(
+                    previous_db_id=ranking.id,
+                    name=ranking.title,
+                    slug=ranking.slug,
+                )
+                _ranking.description = ranking.description
+                _ranking.save()
+            except IntegrityError as e:
+                print(str(e) + ' ' + ranking.slug)
+            percent = int(float(cnt) * 100 / ranking_count)
+            show_progress(percent)
+        self.stdout.write("Ranking imported")
+
+        ###### Save Awards ###########
+        self.stdout.write("Importing awards...")
+        for award in awards:
+            _award, award_created = Award.objects.get_or_create(
+                previous_db_id=award.id,
+                name=award.title,
+                description=award.award
+            )
+        self.stdout.write("Award data imported")
+
+        ###### Save Faculty ###########
+
+        self.stdout.write("Importing faculties...")
+        for faculty in faculties:
+            _abstract_title_slug = abstract_title_slug.get(faculty.abstracttitleslug_ptr_id)
+            _faculty, faculty_created = Faculty.objects.get_or_create(
+                previous_db_id=_abstract_title_slug.id,
+                name=_abstract_title_slug.title,
+                slug=faculty.slug,
+            )
+        self.stdout.write("Faculty data imported")
+
         # ###### Save Level ###########
         # self.stdout.write("Importing levels...")
         # for level in levels:
@@ -188,19 +220,6 @@ class Command(BaseCommand):
         #     _level.save()
         #
         # self.stdout.write("Level data imported")
-        #
-        # ###### Save Scholarship Category ###########
-        # self.stdout.write("Importing scholarship category...")
-        # for scholarship_category in scholarship_categories:
-        #     _scholarship_category, scholarship_category_created = ScholarshipCategory.objects.get_or_create(
-        #         previous_db_id=scholarship_category.id,
-        #         title=scholarship_category.title,
-        #         slug=scholarship_category.slug,
-        #     )
-        #     _scholarship_category.created_on = scholarship_category.created_on
-        #     _scholarship_category.save()
-        #
-        # self.stdout.write("Scholarship Category data imported")
         #
         # ###### Save University Category ###########
         # self.stdout.write("Importing university category...")
@@ -893,30 +912,6 @@ class Command(BaseCommand):
         #     percent = int(float(cnt) * 100 / news_count)
         #     show_progress(percent)
         # self.stdout.write("News imported")
-        #
-        # ##### Save Ranking ###########
-        #
-        # self.stdout.write("Importing ranking...")
-        # ranking_count = rankings.count()
-        #
-        # for cnt, ranking in enumerate(rankings):
-        #     try:
-        #         _ranking, _ranking_created = Ranking.objects.get_or_create(
-        #             previous_db_id=ranking.id,
-        #             title=ranking.title,
-        #             slug=ranking.slug,
-        #             meta_keywords=ranking.meta_keywords,
-        #             meta_description=ranking.meta_description,
-        #             has_published=ranking.publish,
-        #         )
-        #         _ranking.description = ranking.description
-        #         _ranking.created_on = ranking.created_on
-        #         _ranking.save()
-        #     except IntegrityError as e:
-        #         print(str(e) + ' ' + ranking.slug)
-        #     percent = int(float(cnt) * 100 / ranking_count)
-        #     show_progress(percent)
-        # self.stdout.write("Ranking imported")
         #
         # ###### Save Rank ###########
         # self.stdout.write("Importing ranking...")
