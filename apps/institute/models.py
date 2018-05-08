@@ -10,6 +10,7 @@ from ..program.models import Board, Program
 
 
 class Personnel(models.Model):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     prefix = models.CharField(max_length=10, blank=True, null=True)
     name = models.CharField(max_length=255)
     photo = VersatileImageField(upload_to='personnels/')
@@ -19,6 +20,7 @@ class Personnel(models.Model):
 
 
 class Designation(models.Model):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     is_founder = models.BooleanField(default=False)
 
