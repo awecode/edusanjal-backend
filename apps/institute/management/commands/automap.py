@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 
 from apps.institute.models import Institute, Personnel, Designation, InstitutePersonnel, ScholarshipCategory, \
     Award, Ranking
-from apps.program.models import Faculty, Board
+from apps.program.models import Faculty, Board, Discipline
 
 
 def get_set_value(obj, alchemy, arr):
@@ -73,6 +73,7 @@ class Command(BaseCommand):
             _Award = Base.classes.college_award
             _Faculty = Base.classes.college_faculty
             _University = Base.classes.college_university
+            _CourseType = Base.classes.college_coursetype
             # _Level = Base.classes.course_level
             # _UniversityCategory = Base.classes.university_category
             # _CollegeCategory = Base.classes.college_category
@@ -106,6 +107,7 @@ class Command(BaseCommand):
         awards = session.query(_Award)  # Mapping table
         faculties = session.query(_Faculty)  # Mapping table
         universities = session.query(_University)  # Mapping table
+        course_types = session.query(_CourseType)  # Mapping table
         #  levels = session.query(_Level)  # Mapping table
         # university_categories = session.query(_UniversityCategory)  # Mapping table
         # college_categories = session.query(_CollegeCategory)  # Mapping table
@@ -266,6 +268,19 @@ class Command(BaseCommand):
             percent = int(float(cnt) * 100 / university_count)
             show_progress(percent)
         self.stdout.write("Board imported")
+
+        ##### Save Discipline ###########
+
+        self.stdout.write("Importing discipline...")
+
+        for course_type in course_types:
+            _discipline, discipline_created = Discipline.objects.get_or_create(
+                previous_db_id=course_type.id,
+                name=course_type.title,
+                slug=course_type.slug,
+                full_name=course_type.full_name,
+            )
+        self.stdout.write("Discipline data imported")
 
         # self.stdout.write("University Category data imported")
         #

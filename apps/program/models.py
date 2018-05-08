@@ -52,6 +52,8 @@ class BoardDocument(models.Model):
 
 
 class Discipline(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
+    full_name = models.CharField(max_length=250, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
 
