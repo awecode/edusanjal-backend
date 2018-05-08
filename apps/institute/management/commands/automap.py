@@ -313,7 +313,6 @@ class Command(BaseCommand):
             )
         self.stdout.write("Board Brochures data imported")
 
-
         ##### Save Discipline ###########
 
         self.stdout.write("Importing discipline...")
