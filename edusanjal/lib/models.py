@@ -7,11 +7,11 @@ class PointModel(models.Model):
 
     @property
     def latitude(self):
-        return self.point.y
+        return self.point.y if self.point else None
 
     @property
     def longitude(self):
-        return self.point.x
+        return self.point.x if self.point else None
 
     class Meta:
         abstract = True
