@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 
 from apps.institute.models import Institute, Personnel, Designation, InstitutePersonnel, ScholarshipCategory, \
     Award, Ranking
-from apps.program.models import Faculty, Board, Discipline
+from apps.program.models import Faculty, Board, Discipline, Council, CouncilDocument, BoardDocument, BoardImage
 
 
 def get_set_value(obj, alchemy, arr):
@@ -66,6 +66,8 @@ class Command(BaseCommand):
 
         try:
             _AbstractTitleSlug = Base.classes.college_abstracttitleslug
+            _Brochure = Base.classes.college_brochure
+            _Gallery = Base.classes.college_gallery
             _Designation = Base.classes.college_designation
             _Personnel = Base.classes.college_personnel
             _ScholarshipCategory = Base.classes.college_scholarshipcategory
@@ -74,7 +76,7 @@ class Command(BaseCommand):
             _Faculty = Base.classes.college_faculty
             _University = Base.classes.college_university
             _CourseType = Base.classes.college_coursetype
-            # _Level = Base.classes.course_level
+            _Council = Base.classes.college_council
             # _UniversityCategory = Base.classes.university_category
             # _CollegeCategory = Base.classes.college_category
             # _Type = Base.classes.college_type
@@ -108,7 +110,9 @@ class Command(BaseCommand):
         faculties = session.query(_Faculty)  # Mapping table
         universities = session.query(_University)  # Mapping table
         course_types = session.query(_CourseType)  # Mapping table
-        #  levels = session.query(_Level)  # Mapping table
+        councils = session.query(_Council)  # Mapping table
+        brochures = session.query(_Brochure)  # Mapping table
+        galleries = session.query(_Gallery)  # Mapping table
         # university_categories = session.query(_UniversityCategory)  # Mapping table
         # college_categories = session.query(_CollegeCategory)  # Mapping table
         # types = session.query(_Type)  # Mapping table
@@ -269,6 +273,47 @@ class Command(BaseCommand):
             show_progress(percent)
         self.stdout.write("Board imported")
 
+        ##### Save Board Document ###########
+
+        self.stdout.write("Importing board documents...")
+
+        try:
+            _UniversityBrochure = Base.classes.college_university_brochure
+            college_university_brochures = session.query(_UniversityBrochure)
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        for college_university_brochure in college_university_brochures:
+            brochure = brochures.get(college_university_brochure.brochure_id)
+            board = Board.objects.get(previous_db_id=college_university_brochure.university_id)
+            _board_document, board_document_created = BoardDocument.objects.get_or_create(
+                name=brochure.title,
+                board=board,
+                file=brochure.brochure,
+            )
+        self.stdout.write("Board Brochures data imported")
+
+        ##### Save Board Gallery ###########
+
+        self.stdout.write("Importing board gallery...")
+
+        try:
+            _UniversityGallery = Base.classes.college_university_gallery
+            college_university_galleries = session.query(_UniversityGallery)
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        for college_university_gallery in college_university_galleries:
+            gallery = galleries.get(college_university_gallery.gallery_id)
+            board = Board.objects.get(previous_db_id=college_university_gallery.university_id)
+            _board_image, board_image_created = BoardImage.objects.get_or_create(
+                name=gallery.caption,
+                board=board,
+                file=gallery.image,
+            )
+        self.stdout.write("Board Brochures data imported")
+
+
         ##### Save Discipline ###########
 
         self.stdout.write("Importing discipline...")
@@ -282,8 +327,45 @@ class Command(BaseCommand):
             )
         self.stdout.write("Discipline data imported")
 
-        # self.stdout.write("University Category data imported")
-        #
+        ##### Save Council ###########
+
+        self.stdout.write("Importing councils...")
+
+        for council in councils:
+            _council, council_created = Council.objects.get_or_create(
+                previous_db_id=council.id,
+                name=council.title,
+                slug=council.slug,
+                short_name=council.short_name,
+                address=council.address,
+                logo=council.logo,
+                email=council.email,
+                phone=council.phone,
+                website=council.website,
+                description=council.description,
+            )
+        self.stdout.write("Council data imported")
+
+        ##### Save Council Document ###########
+
+        self.stdout.write("Importing councils documents...")
+
+        try:
+            _CouncilBrochure = Base.classes.college_council_brochure
+            college_council_brochures = session.query(_CouncilBrochure)
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        for college_university_brochure in college_council_brochures:
+            brochure = brochures.get(college_university_brochure.brochure_id)
+            council = Council.objects.get(previous_db_id=college_university_brochure.council_id)
+            _council_document, council_document_created = CouncilDocument.objects.get_or_create(
+                name=brochure.title,
+                council=council,
+                file=brochure.brochure,
+            )
+        self.stdout.write("Council Brochures data imported")
+
         # ###### Save College Category ###########
         # self.stdout.write("Importing college category...")
         # for college_category in college_categories:
