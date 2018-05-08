@@ -14,6 +14,7 @@ class Faculty(SlugModel):
 
 
 class Board(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     short_name = models.CharField(max_length=15, blank=True, null=True)
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
@@ -27,6 +28,9 @@ class Board(SlugModel):
     description = models.TextField()
     salient_features = models.TextField(blank=True, null=True)
     international = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
 class BoardImage(models.Model):

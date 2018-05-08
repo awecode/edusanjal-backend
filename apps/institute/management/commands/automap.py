@@ -3,6 +3,7 @@ import datetime
 from time import sleep
 import sys
 
+import re
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.management.base import BaseCommand, CommandError
 from django.db import IntegrityError
@@ -12,7 +13,7 @@ from sqlalchemy import create_engine
 
 from apps.institute.models import Institute, Personnel, Designation, InstitutePersonnel, ScholarshipCategory, \
     Award, Ranking
-from apps.program.models import Faculty
+from apps.program.models import Faculty, Board
 
 
 def get_set_value(obj, alchemy, arr):
@@ -71,6 +72,7 @@ class Command(BaseCommand):
             _Ranking = Base.classes.rank_ranking
             _Award = Base.classes.college_award
             _Faculty = Base.classes.college_faculty
+            _University = Base.classes.college_university
             # _Level = Base.classes.course_level
             # _UniversityCategory = Base.classes.university_category
             # _CollegeCategory = Base.classes.college_category
@@ -80,7 +82,6 @@ class Command(BaseCommand):
             # _EventCategory = Base.classes.event_category
             # _Position = Base.classes.vacancy_position
             # _District = Base.classes.core_district
-            # _University = Base.classes.university_university
             # _Career = Base.classes.career_career
             # _Course = Base.classes.course_course
             # _College = Base.classes.college_college
@@ -104,7 +105,8 @@ class Command(BaseCommand):
         rankings = session.query(_Ranking)  # Mapping table
         awards = session.query(_Award)  # Mapping table
         faculties = session.query(_Faculty)  # Mapping table
-        # levels = session.query(_Level)  # Mapping table
+        universities = session.query(_University)  # Mapping table
+        #  levels = session.query(_Level)  # Mapping table
         # university_categories = session.query(_UniversityCategory)  # Mapping table
         # college_categories = session.query(_CollegeCategory)  # Mapping table
         # types = session.query(_Type)  # Mapping table
@@ -113,11 +115,10 @@ class Command(BaseCommand):
         # event_categories = session.query(_EventCategory)  # Mapping table
         # positions = session.query(_Position)  # Mapping table
         # districts = session.query(_District)  # Mapping table
-        # universities = session.query(_University)  # Mapping table
         # careers = session.query(_Career)  # Mapping table
         # courses = session.query(_Course)  # Mapping table
         # colleges = session.query(_College)  # Mapping table
-        # advertisements = session.query(_Advertisement)  # Mappin, g table
+        # advertisements = session.query(_Advertisement)  # Mapping table
         # scholarships = session.query(_Scholarship)  # Mapping table
         # admissions = session.query(_Admission)  # Mapping table
         # vacancies = session.query(_Vacancy)  # Mapping table
@@ -208,30 +209,64 @@ class Command(BaseCommand):
             )
         self.stdout.write("Faculty data imported")
 
-        # ###### Save Level ###########
-        # self.stdout.write("Importing levels...")
-        # for level in levels:
-        #     _level, level_created = Level.objects.get_or_create(
-        #         previous_db_id=level.id,
-        #         title=level.title,
-        #         slug=level.slug,
-        #     )
-        #     _level.created_on = level.created_on
-        #     _level.save()
-        #
-        # self.stdout.write("Level data imported")
-        #
-        # ###### Save University Category ###########
-        # self.stdout.write("Importing university category...")
-        # for university_category in university_categories:
-        #     _university_category, univeristy_category_created = UniversityCategory.objects.get_or_create(
-        #         previous_db_id=university_category.id,
-        #         title=university_category.title,
-        #         slug=university_category.slug,
-        #     )
-        #     _university_category.created_on = university_category.created_on
-        #     _university_category.save()
-        #
+        ##### Save Board ###########
+
+        self.stdout.write("Importing boards...")
+        university_count = universities.count()
+
+        # ManyToMany relation holding table for university and faculty
+        try:
+            _UniversityFaculty = Base.classes.college_university_faculty
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        try:
+            _UniversityCategory = Base.classes.college_university_category
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        for cnt, university in enumerate(universities):
+            category = [abstract_title_slug.get(uni_category.universitycategory_id) for uni_category in
+                        session.query(_UniversityCategory).filter_by(university_id=university.id)]
+            faculties = [Faculty.objects.get(previous_db_id=uni_faculty.faculty_id) for uni_faculty in
+                         session.query(_UniversityFaculty).filter_by(university_id=university.id)]
+            international = None
+            if category:
+                international = category[0].title in ['International University']
+            established = None
+            if university.established_on:
+                established_match = re.search('\d+', university.established_on)
+                established = int(established_match.group())
+            try:
+                _board, _board_created = Board.objects.get_or_create(
+                    previous_db_id=university.id,
+                    name=university.title,
+                    slug=university.slug,
+                    established=established,
+                    phone=[university.phone],
+                    email=[university.email],
+                    international=international,
+                )
+                get_set_value(
+                    _board,
+                    university,
+                    [
+                        'short_name',
+                        'address',
+                        'logo',
+                        'website',
+                        'video_link',
+                        'description',
+                        'salient_features',
+                    ])
+                _board.faculties.add(*faculties)
+                _board.save()
+            except IntegrityError as e:
+                print(str(e) + ' ' + university.slug)
+            percent = int(float(cnt) * 100 / university_count)
+            show_progress(percent)
+        self.stdout.write("Board imported")
+
         # self.stdout.write("University Category data imported")
         #
         # ###### Save College Category ###########
