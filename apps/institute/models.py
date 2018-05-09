@@ -29,9 +29,9 @@ class Designation(models.Model):
 
 
 INSTITUTE_TYPES = (
-    ('Private', 'Private'),
-    ('Public', 'Public'),
-    ('Community', 'Community'),
+    ('private', 'Private'),
+    ('public', 'Public'),
+    ('community', 'Community'),
 )
 
 
@@ -42,6 +42,7 @@ class Award(SlugModel):
 
 
 class Institute(PointModel, SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     short_name = models.CharField(max_length=15, blank=True, null=True)
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
@@ -62,7 +63,7 @@ class Institute(PointModel, SlugModel):
     ugc_accredition = models.BooleanField(default=False, verbose_name='UGC Accredition')
     published = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    type = models.CharField(max_length=20, choices=INSTITUTE_TYPES, default='Private')
+    type = models.CharField(max_length=20, choices=INSTITUTE_TYPES, default='Private', null=True)
 
     has_building = models.BooleanField(default=False, verbose_name='Does the college own its building?')
     no_of_buildings = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -163,7 +164,7 @@ class InstituteProgram(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_programs')
     year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                             null=True)
-    fee = models.IntegerField(blank=True, null=True)
+    fee = models.CharField(max_length=25, blank=True, null=True)
     seats = models.PositiveSmallIntegerField(blank=True, null=True)
     time_slot = models.CharField(max_length=255, blank=True, null=True)
 
@@ -213,6 +214,7 @@ class ScholarshipCategory(models.Model):
 class Scholarship(SlugModel):
     starts_on = models.DateField(blank=True, null=True)
     ends_on = models.DateField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     categories = models.ManyToManyField(ScholarshipCategory)
     institutes = models.ManyToManyField(Institute, blank=True)
 
@@ -227,3 +229,4 @@ class Rank(models.Model):
     position = models.PositiveSmallIntegerField(default=1)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     remarks = models.CharField(max_length=255, blank=True, null=True)
+    size = models.IntegerField(null=True, blank=True)
