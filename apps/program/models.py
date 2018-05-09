@@ -64,6 +64,12 @@ class Level:
         (2, 'Secondary School'),
         (3, 'Bachelors'),
         (4, 'Masters'),
+        (5, 'Post Graduate Diploma'),
+        (6, 'Master of Philosophy'),
+        (7, 'TSLC'),
+        (8, 'Chartered Accountancy (CA)'),
+        (9, 'Certificate/Diploma'),
+        (10, 'Doctorate'),
     )
 
     LEVELS_PAIR = [(level[1], level[1]) for level in LEVELS]
@@ -99,9 +105,10 @@ class CouncilDocument(models.Model):
 
 
 class Program(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     short_name = models.CharField(max_length=255, blank=True, null=True)
-    level = models.CharField(max_length=30, choices=Level.LEVELS_PAIR)
+    level = models.CharField(max_length=100, choices=Level.LEVELS_PAIR, null=True)
     faculty = models.ForeignKey(Faculty, blank=True, null=True, on_delete=models.SET_NULL)
     board = models.ForeignKey(Board, blank=True, null=True, on_delete=models.SET_NULL)
     recognition = models.ForeignKey(Council, blank=True, null=True, on_delete=models.SET_NULL)
@@ -112,7 +119,7 @@ class Program(SlugModel):
     eligibility = models.TextField(blank=True, null=True)
     job_prospects = models.TextField(blank=True, null=True)
     salient_features = models.TextField(blank=True, null=True)
-    curricular_stucture = models.TextField(blank=True, null=True)
+    curricular_structure = models.TextField(blank=True, null=True)
     admission_criteria = models.TextField(blank=True, null=True)
     featured = models.BooleanField(default=False)
     published = models.BooleanField(default=True)

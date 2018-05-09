@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 
 from apps.institute.models import Institute, Personnel, Designation, InstitutePersonnel, ScholarshipCategory, \
     Award, Ranking
-from apps.program.models import Faculty, Board, Discipline, Council, CouncilDocument, BoardDocument, BoardImage
+from apps.program.models import Faculty, Board, Discipline, Council, CouncilDocument, BoardDocument, BoardImage, Program
 
 
 def get_set_value(obj, alchemy, arr):
@@ -77,6 +77,7 @@ class Command(BaseCommand):
             _University = Base.classes.college_university
             _CourseType = Base.classes.college_coursetype
             _Council = Base.classes.college_council
+            _Course = Base.classes.college_course
             # _UniversityCategory = Base.classes.university_category
             # _CollegeCategory = Base.classes.college_category
             # _Type = Base.classes.college_type
@@ -86,7 +87,6 @@ class Command(BaseCommand):
             # _Position = Base.classes.vacancy_position
             # _District = Base.classes.core_district
             # _Career = Base.classes.career_career
-            # _Course = Base.classes.course_course
             # _College = Base.classes.college_college
             # _Advertisement = Base.classes.advertisement_advertisement
             # _Scholarship = Base.classes.scholarship_scholarship
@@ -113,6 +113,7 @@ class Command(BaseCommand):
         councils = session.query(_Council)  # Mapping table
         brochures = session.query(_Brochure)  # Mapping table
         galleries = session.query(_Gallery)  # Mapping table
+        courses = session.query(_Course)  # Mapping table
         # university_categories = session.query(_UniversityCategory)  # Mapping table
         # college_categories = session.query(_CollegeCategory)  # Mapping table
         # types = session.query(_Type)  # Mapping table
@@ -122,7 +123,6 @@ class Command(BaseCommand):
         # positions = session.query(_Position)  # Mapping table
         # districts = session.query(_District)  # Mapping table
         # careers = session.query(_Career)  # Mapping table
-        # courses = session.query(_Course)  # Mapping table
         # colleges = session.query(_College)  # Mapping table
         # advertisements = session.query(_Advertisement)  # Mapping table
         # scholarships = session.query(_Scholarship)  # Mapping table
@@ -365,6 +365,104 @@ class Command(BaseCommand):
             )
         self.stdout.write("Council Brochures data imported")
 
+        ##### Save Course ###########
+
+        self.stdout.write("Importing courses...")
+        course_count = courses.count()
+        try:
+            # ManyToMany relation holding table for Course and Related Course
+            _RelatedCourse = Base.classes.college_course_related_courses
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        try:
+            _CourseCouncil = Base.classes.college_council_courses
+            college_council_courses = session.query(_CourseCouncil)
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        for cnt, course in enumerate(courses):
+            course_level = None
+            if course.level_id:
+                course_level = abstract_title_slug.get(course.level_id)
+
+            try:
+                course_faculty = Faculty.objects.get(previous_db_id=course.faculty_id)
+            except ObjectDoesNotExist:
+                course_faculty = None
+
+            try:
+                course_council = college_council_courses.filter_by(course_id=course.id).first()
+                council = None
+                if course_council:
+                    council = Council.objects.get(previous_db_id=course_council.council_id)
+            except ObjectDoesNotExist:
+                course_council = None
+
+            try:
+                discipline = Discipline.objects.get(previous_db_id=course.course_type_id)
+            except ObjectDoesNotExist:
+                discipline = None
+
+            try:
+                course_board = Board.objects.get(previous_db_id=course.university_id)
+                board_name = course_board.name
+            except ObjectDoesNotExist:
+                course_board= None
+                board_name = None
+
+            try:
+                _course, _course_created = Program.objects.get_or_create(
+                    previous_db_id=course.id,
+                    name=course.title,
+                    slug=course.slug,
+                    full_name=course.full_title,
+                    level=course_level,
+                    faculty=course_faculty,
+                    board=course_board,
+                    recognition=council,
+                    job_prospects=course.job_prospectus,
+                    featured=course.is_featured,
+                    published=course.has_published,
+                )
+                get_set_value(
+                    _course,
+                    course,
+                    [
+                        'short_name',
+                        'duration_years',
+                        'duration_months',
+                        'description',
+                        'eligibility',
+                        'salient_features',
+                        'curricular_structure',
+                        'admission_criteria',
+                    ])
+                if discipline:
+                    disciplines= [discipline]
+                    _course.disciplines.add(*disciplines)
+                    _course.save()
+            except IntegrityError as e:
+                print(str(e) + course.slug)
+            percent = int(float(cnt) * 100 / course_count)
+            show_progress(percent)
+
+        self.stdout.write("Setting related courses...")
+
+        for cnt, course in enumerate(courses):
+            related_courses = [Program.objects.get(previous_db_id=related_course.to_course_id) for related_course in
+                               session.query(_RelatedCourse).filter_by(from_course_id=course.id)]
+            try:
+                _course = Program.objects.get(previous_db_id=course.id)
+                _course.related_programs.add(*related_courses)
+                _course.save()
+            except IntegrityError as e:
+                print(str(e) + course.slug)
+            percent = int(float(cnt) * 100 / course_count)
+            show_progress(percent)
+
+        self.stdout.write("Course imported")
+
         # ###### Save College Category ###########
         # self.stdout.write("Importing college category...")
         # for college_category in college_categories:
@@ -541,94 +639,6 @@ class Command(BaseCommand):
         #     show_progress(percent)
         #
         # self.stdout.write("Career imported")
-        #
-        #
-        # ##### Save Course ###########
-        #
-        # self.stdout.write("Importing courses...")
-        # course_count = courses.count()
-        # try:
-        #     # ManyToMany relation holding table for Course and Related Course
-        #     _RelatedCourse = Base.classes.course_course_related_courses
-        #     # ManyToMany relation holding table for Course and Career
-        #     _CourseCareer = Base.classes.course_course_career
-        # except AttributeError as e:
-        #     self.stdout.write("No table found named." + e[0])
-        #
-        # for cnt, course in enumerate(courses):
-        #     try:
-        #         course_level = Level.objects.get(previous_db_id=course.level_id)
-        #     except ObjectDoesNotExist:
-        #         course_level = None
-        #
-        #     try:
-        #         course_faculty = Faculty.objects.get(previous_db_id=course.faculty_id)
-        #     except ObjectDoesNotExist:
-        #         course_faculty = None
-        #
-        #     try:
-        #         course_university = University.objects.get(previous_db_id=course.university_id)
-        #         board_name = course_university.title
-        #     except ObjectDoesNotExist:
-        #         course_university = None
-        #         board_name = None
-        #     try:
-        #        course_careers = [Career.objects.get(previous_db_id=course_career.career_id) for course_career in
-        #                     session.query(_CourseCareer).filter_by(course_id=course.id)]
-        #     except ObjectDoesNotExist:
-        #         course_careers = []
-        #
-        #     try:
-        #         _course, _course_created = Course.objects.get_or_create(
-        #             previous_db_id=course.id,
-        #             title=course.title,
-        #             board_name=board_name,
-        #             slug=course.slug,
-        #             level=course_level,
-        #             faculty=course_faculty,
-        #             university=course_university,
-        #             is_featured=course.featured,
-        #             has_published=course.publish,
-        #         )
-        #         get_set_value(
-        #             _course,
-        #             course,
-        #             [
-        #                 'short_name',
-        #                 'recognition',
-        #                 'duration_years',
-        #                 'duration_months',
-        #                 'description',
-        #                 'eligibility',
-        #                 'job_prospectus',
-        #                 'salient_features',
-        #                 'curricular_structure',
-        #                 'admission_criteria',
-        #             ])
-        #         _course.careers.add(*course_careers)
-        #         _course.created_on = course.created_on
-        #         _course.save()
-        #     except IntegrityError as e:
-        #         print(str(e) + course.slug)
-        #     percent = int(float(cnt) * 100 / course_count)
-        #     show_progress(percent)
-        #
-        #
-        # self.stdout.write("Setting related courses...")
-        #
-        # for cnt, course in enumerate(courses):
-        #     related_courses = [Course.objects.get(previous_db_id=related_course.to_course_id) for related_course in
-        #                        session.query(_RelatedCourse).filter_by(from_course_id=course.id)]
-        #     try:
-        #         _course = Course.objects.get(previous_db_id=course.id)
-        #         _course.related_courses.add(*related_courses)
-        #         _course.save()
-        #     except IntegrityError as e:
-        #         print(str(e) + course.slug)
-        #     percent = int(float(cnt) * 100 / course_count)
-        #     show_progress(percent)
-        #
-        # self.stdout.write("Course imported")
         #
         #
         # ##### Save College ###########
