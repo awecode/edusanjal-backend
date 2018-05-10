@@ -108,11 +108,8 @@ class Institute(PointModel, SlugModel):
 
 class InstituteImage(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='images')
-    name = models.CharField(max_length=255)
-    file = VersatileImageField(upload_to='institute_images/',
-                               width_field='width',
-                               height_field='height'
-                               )
+    name = models.CharField(max_length=255, blank=True, null=True)
+    file = VersatileImageField(upload_to='institute_images/')
     height = models.PositiveIntegerField(
         'Image Height',
         blank=True,
@@ -142,7 +139,7 @@ class InstituteImage(models.Model):
 
 class InstituteDocument(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='documents')
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
     file = models.FileField(upload_to='institute_documents/')
 
     def __str__(self):

@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
 from apps.institute.models import Institute, Personnel, Designation, InstitutePersonnel, ScholarshipCategory, \
-    Award, Ranking, InstituteProgram, InstituteAward, Scholarship, Rank
+    Award, Ranking, InstituteProgram, InstituteAward, Scholarship, Rank, InstituteDocument, InstituteImage, Admission
 from apps.program.models import Faculty, Board, Discipline, Council, CouncilDocument, BoardDocument, BoardImage, Program
 
 
@@ -83,22 +83,7 @@ class Command(BaseCommand):
             _College = Base.classes.college_college
             _Scholarship = Base.classes.college_scholarship
             _Rank = Base.classes.rank_rank
-            # _UniversityCategory = Base.classes.university_category
-            # _CollegeCategory = Base.classes.college_category
-            # _Type = Base.classes.college_type
-            # _Author = Base.classes.blog_author
-            # _NewsCategory = Base.classes.blog_category
-            # _EventCategory = Base.classes.event_category
-            # _Position = Base.classes.vacancy_position
-            # _District = Base.classes.core_district
-            # _Career = Base.classes.career_career
-            # _Advertisement = Base.classes.advertisement_advertisement
-            # _Admission = Base.classes.admission_admission
-            # _Vacancy = Base.classes.vacancy_vacancy
-            # _Event = Base.classes.event_event
-            # _News = Base.classes.blog_blog
-            # _Gallery = Base.classes.college_gallery
-            # _Filer = Base.classes.filer_file
+            _Admission = Base.classes.college_admission
         except AttributeError as e:
             self.stdout.write("No table found named." + e[0])
 
@@ -118,22 +103,7 @@ class Command(BaseCommand):
         colleges = session.query(_College)  # Mapping table
         scholarships = session.query(_Scholarship)  # Mapping table
         ranks = session.query(_Rank)  # Mapping table
-        # university_categories = session.query(_UniversityCategory)  # Mapping table
-        # college_categories = session.query(_CollegeCategory)  # Mapping table
-        # types = session.query(_Type)  # Mapping table
-        # authors = session.query(_Author)  # Mapping table
-        # news_categories = session.query(_NewsCategory)  # Mapping table
-        # event_categories = session.query(_EventCategory)  # Mapping table
-        # positions = session.query(_Position)  # Mapping table
-        # districts = session.query(_District)  # Mapping table
-        # careers = session.query(_Career)  # Mapping table
-        # advertisements = session.query(_Advertisement)  # Mapping table
-        # admissions = session.query(_Admission)  # Mapping table
-        # vacancies = session.query(_Vacancy)  # Mapping table
-        # events = session.query(_Event)  # Mapping table
-        # news = session.query(_News)  # Mapping table
-        # galleries = session.query(_Gallery)  # Mapping table
-        # filers = session.query(_Filer)  # Mapping table
+        admissions = session.query(_Admission)  # Mapping table
 
         ##### Save Designation ###########
 
@@ -755,19 +725,98 @@ class Command(BaseCommand):
         ###### Save College Document ###########
 
         self.stdout.write("Importing institute document...")
-        institute_docuemnt_count = personnel.count()
-        for cnt, person in enumerate(personnel):
-            _institute_document, institute_document_created = Personnel.objects.get_or_create(
-                previous_db_id=person.id,
-                prefix=person.prefix,
-                name=person.name,
-                photo=person.photo,
-            )
-            percent = int(float(cnt) * 100 / institute_docuemnt_count)
+        institute_document_count = brochures.count()
+        for cnt, brochure in enumerate(brochures):
+            try:
+                institute = Institute.objects.get(previous_db_id=brochure.college_id)
+            except Exception as e:
+                institute = None
+
+            if institute:
+                _institute_document, institute_document_created = InstituteDocument.objects.get_or_create(
+                    institute=institute,
+                    name=brochure.title,
+                    file=brochure.brochure,
+                )
+            percent = int(float(cnt) * 100 / institute_document_count)
             show_progress(percent)
 
-        self.stdout.write("Personnel imported")
+        self.stdout.write("Institute Document imported")
 
+        ###### Save College Image ###########
+
+        self.stdout.write("Importing institute image...")
+        institute_image_count = galleries.count()
+        for cnt, gallery in enumerate(galleries):
+            try:
+                institute = Institute.objects.get(previous_db_id=gallery.college_id)
+            except Exception as e:
+                institute = None
+            print(institute)
+            print(gallery.caption)
+            print(gallery.image)
+            if institute:
+                _institute_image, institute_image_created = InstituteImage.objects.get_or_create(
+                    name=gallery.caption,
+                    institute=institute,
+                    file=gallery.image,
+                )
+
+
+            percent = int(float(cnt) * 100 / institute_image_count)
+            show_progress(percent)
+
+        self.stdout.write("Institute Document imported")
+
+        ###### Save Admission ###########
+
+        self.stdout.write("Importing admission...")
+        admission_count = admissions.count()
+
+        try:
+            _AdmissionCollege = Base.classes.college_admission_colleges
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        try:
+            _AdmissionCourse = Base.classes.college_admission_courses
+        except AttributeError as e:
+            self.stdout.write("No table found named." + e[0])
+
+        for cnt, admission in enumerate(admissions):
+
+            try:
+                admission_institutes = [Institute.objects.get(previous_db_id=admission_college.college_id)
+                                     for
+                                     admission_college in
+                                     session.query(_AdmissionCollege).filter_by(admission_id=admission.id)]
+            except ObjectDoesNotExist:
+                admission_institutes = []
+
+            try:
+                admission_programs = [Program.objects.get(previous_db_id=admission_course.course_id)
+                                     for
+                                     admission_course in
+                                     session.query(_AdmissionCourse).filter_by(admission_id=admission.id)]
+            except ObjectDoesNotExist:
+                admission_programs = []
+            try:
+                _admission, _admission_created = Admission.objects.get_or_create(
+                    name=admission.title,
+                    slug=admission.slug,
+                    description=admission.description,
+                    starts_on=admission.starts_on,
+                    ends_on=admission.ends_on,
+                )
+                _admission.programs.add(*admission_programs)
+                _admission.institutes.add(*admission_institutes)
+                _admission.created_on = admission.created_on
+                _admission.save()
+            except IntegrityError as e:
+                print(str(e) + ' ' + admission.slug)
+            percent = int(float(cnt) * 100 / admission_count)
+            show_progress(percent)
+        self.stdout.write("Admission imported")
 
         self.stdout.write("Complete!")
         pass

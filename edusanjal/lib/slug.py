@@ -75,7 +75,7 @@ def unique_slugify(instance, value, slug_field_name='slug', queryset=None, slug_
 
 class SlugModel(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=100, blank=True, help_text='Leave blank for autofill.', unique=True)
+    slug = models.SlugField(max_length=200, blank=True, help_text='Leave blank for autofill.', unique=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
