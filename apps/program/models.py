@@ -1,6 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from froala_editor.fields import FroalaField
 from versatileimagefield.fields import VersatileImageField
 
 from edusanjal.lib.slug import SlugModel
@@ -24,8 +26,8 @@ class Board(SlugModel):
     website = models.URLField(blank=True, null=True)
     video_link = models.URLField(blank=True, null=True)
     faculties = models.ManyToManyField(Faculty, blank=True)
-    description = models.TextField()
-    salient_features = models.TextField(blank=True, null=True)
+    description = FroalaField()
+    salient_features = FroalaField(blank=True, null=True)
     international = models.BooleanField(default=False)
 
 
@@ -48,7 +50,7 @@ class BoardDocument(models.Model):
 
 
 class Discipline(SlugModel):
-    description = models.TextField(blank=True, null=True)
+    description = FroalaField(blank=True, null=True)
 
 
 class Level:
@@ -64,7 +66,7 @@ class Level:
 
 
 class Council(SlugModel):
-    description = models.TextField(blank=True, null=True)
+    description = FroalaField(blank=True, null=True)
 
 
 class CouncilImage(models.Model):
@@ -92,12 +94,12 @@ class Program(SlugModel):
     related_programs = models.ManyToManyField('self', blank=True)
     duration_years = models.PositiveSmallIntegerField(blank=True, null=True)
     duration_months = models.PositiveSmallIntegerField(blank=True, null=True)
-    description = models.TextField()
-    eligibility = models.TextField(blank=True, null=True)
-    job_prospects = models.TextField(blank=True, null=True)
-    salient_features = models.TextField(blank=True, null=True)
-    curricular_stucture = models.TextField(blank=True, null=True)
-    admission_criteria = models.TextField(blank=True, null=True)
+    description = FroalaField()
+    eligibility = FroalaField(blank=True, null=True)
+    job_prospects = FroalaField(blank=True, null=True)
+    salient_features = FroalaField(blank=True, null=True)
+    curricular_stucture = FroalaField(blank=True, null=True)
+    admission_criteria = FroalaField(blank=True, null=True)
     featured = models.BooleanField(default=False)
     published = models.BooleanField(default=True)
     disciplines = models.ManyToManyField(Discipline, blank=True, related_name='programs')

@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
 from froala_editor.fields import FroalaField
 from versatileimagefield.fields import VersatileImageField
 
@@ -35,7 +36,7 @@ INSTITUTE_TYPES = (
 
 
 class Award(SlugModel):
-    description = models.TextField()
+    description = FroalaField()
     image = VersatileImageField(blank=True, null=True, upload_to='awards/')
 
 
@@ -55,9 +56,9 @@ class Institute(PointModel, SlugModel):
     network_institutes = models.ManyToManyField('self', blank=True)
 
     description = FroalaField()
-    salient_features = models.TextField(blank=True, null=True)
-    admission_guidelines = models.TextField(blank=True, null=True)
-    scholarship_information = models.TextField(blank=True, null=True)
+    salient_features = FroalaField(blank=True, null=True)
+    admission_guidelines = FroalaField(blank=True, null=True)
+    scholarship_information = FroalaField(blank=True, null=True)
 
     ugc_accredition = models.BooleanField(default=False, verbose_name='UGC Accredition')
     published = models.BooleanField(default=True)
@@ -154,7 +155,7 @@ class InstituteAward(models.Model):
     position = models.PositiveSmallIntegerField(blank=True, null=True)
     year = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                             null=True)
-    description = models.TextField(blank=True, null=True)
+    description = FroalaField(blank=True, null=True)
     image = VersatileImageField(blank=True, null=True, upload_to='institute_awards/')
 
 
@@ -190,13 +191,13 @@ class InstitutePersonnel(models.Model):
     personnel = models.ForeignKey(Personnel, on_delete=models.CASCADE)
     designation = models.ForeignKey(Designation, on_delete=models.CASCADE)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_personnels')
-    message = models.TextField(blank=True, null=True)
+    message = FroalaField(blank=True, null=True)
 
 
 class Admission(SlugModel):
     programs = models.ManyToManyField(Program, blank=True, related_name='admissions')
     institutes = models.ManyToManyField(Institute, blank=True, related_name='admissions')
-    description = models.TextField()
+    description = FroalaField()
     starts_on = models.DateField(blank=True, null=True)
     ends_on = models.DateField(blank=True, null=True)
     entrance_exam_date = models.DateField(blank=True, null=True)
@@ -215,7 +216,7 @@ class Scholarship(SlugModel):
 
 
 class Ranking(SlugModel):
-    description = models.TextField()
+    description = FroalaField()
 
 
 class Rank(models.Model):
