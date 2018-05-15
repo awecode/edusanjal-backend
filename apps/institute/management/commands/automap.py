@@ -357,6 +357,7 @@ class Command(BaseCommand):
             course_level = None
             if course.level_id:
                 course_level = abstract_title_slug.get(course.level_id)
+                level = course_level.title if course_level else None
 
             try:
                 course_faculty = Faculty.objects.get(previous_db_id=course.faculty_id)
@@ -389,7 +390,7 @@ class Command(BaseCommand):
                     name=course.title,
                     slug=course.slug,
                     full_name=course.full_title,
-                    level=course_level,
+                    level=level,
                     faculty=course_faculty,
                     board=course_board,
                     recognition=council,

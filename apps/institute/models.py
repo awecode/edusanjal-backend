@@ -123,18 +123,20 @@ class InstituteImage(models.Model):
 
     @property
     def thumb_height(self):
-        return int(self.height * 300 / self.width)
+        if self.height and self.width:
+            return int(self.height * 300 / self.width)
 
     @property
     def sizes(self):
+        thumb_height = self.thumb_height if self.thumb_height else 300
         ret = [
             ('full', 'url'),
-            ('small', 'thumbnail__{}x{}'.format(300, self.thumb_height))
+            ('small', 'thumbnail__{}x{}'.format(300, thumb_height))
         ]
         return ret
 
     def __str__(self):
-        return self.name
+        return self.name if self.name else 'InstituteImage Object'
 
 
 class InstituteDocument(models.Model):

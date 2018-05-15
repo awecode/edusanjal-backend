@@ -80,3 +80,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'edusanjal.lib.pagination.PageNumberPagination',
     'PAGE_SIZE': 2
 }
+
+
+# Silent FileNotFound error VersatileImage media not found
+VERSATILEIMAGEFIELD_SETTINGS = {
+    'create_images_on_demand': False
+}
