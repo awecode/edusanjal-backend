@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from froala_editor.fields import FroalaField
 from versatileimagefield.fields import VersatileImageField
 
 from edusanjal.lib.models import PointModel
@@ -52,10 +53,12 @@ class Institute(PointModel, SlugModel):
     website = models.URLField(blank=True, null=True)
     boards = models.ManyToManyField(Board, blank=True)
     network_institutes = models.ManyToManyField('self', blank=True)
-    description = models.TextField()
+
+    description = FroalaField()
     salient_features = models.TextField(blank=True, null=True)
     admission_guidelines = models.TextField(blank=True, null=True)
     scholarship_information = models.TextField(blank=True, null=True)
+
     ugc_accredition = models.BooleanField(default=False, verbose_name='UGC Accredition')
     published = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)

@@ -11,6 +11,7 @@ admin.site.site_header = 'Control Panel'
 urlpatterns = [
                   url(r'^jet/', include('jet.urls', 'jet')),
                   path(settings.ADMIN_URL, admin.site.urls),
+                  url(r'^froala_editor/', include('froala_editor.urls')),
               ] + api_urlpatterns
 
 if settings.DEBUG:
