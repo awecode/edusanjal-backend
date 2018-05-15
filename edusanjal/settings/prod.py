@@ -1,7 +1,7 @@
 import os
 from .base import PROJECT_ROOT, CONTEXT_PROCESSORS, TEMPLATE_LOADERS
 
-ALLOWED_HOSTS = ['edusanjal.com']
+ALLOWED_HOSTS = ['edusanjal.com', 'api.edusanjal.com']
 STATIC_URL = 'https://cdn.awecode.com/ead/'
 
 AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
