@@ -2,7 +2,11 @@ import os
 from .base import PROJECT_ROOT, CONTEXT_PROCESSORS, TEMPLATE_LOADERS
 
 ALLOWED_HOSTS = ['edusanjal.com', 'api.edusanjal.com', 'uat.edusanjal.com']
-STATIC_URL = 'https://cdn.awecode.com/ead/'
+# STATIC_URL = 'https://cdn.awecode.com/ead/'
+STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, '..', 'media')
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, '..', 'static')
+MEDIA_URL = '/media/'
 
 AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
                             {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
