@@ -47,6 +47,11 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     network_institutes = serializers.SerializerMethodField()
     programs = ProgramMinSerializer(many=True)
 
+    logo = serializers.SerializerMethodField()
+
+    def get_logo(self, obj):
+        return build_versatileimagefield_url_set(obj.logo, obj.sizes, self.context.get('request'))
+
     def get_network_institutes(self, obj):
         return InstituteMinSerializer(obj.network_institutes.prefetch_related('programs'), many=True, context=self.context).data
 
