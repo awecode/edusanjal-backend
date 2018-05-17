@@ -29,14 +29,10 @@ class InstituteImageSerializer(serializers.ModelSerializer):
 
 
 class InstituteMinSerializer(serializers.ModelSerializer):
-    logo = serializers.SerializerMethodField()
-
-    def get_logo(self, obj):
-        return build_versatileimagefield_url_set(obj.logo, obj.sizes, self.context.get('request'))
 
     class Meta:
         model = Institute
-        fields = ('name', 'logo', 'slug', 'levels')
+        fields = ('name', 'logo_set', 'slug', 'levels')
 
 
 class InstituteDetailSerializer(serializers.ModelSerializer):
@@ -47,10 +43,7 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     network_institutes = serializers.SerializerMethodField()
     programs = ProgramMinSerializer(many=True)
 
-    logo = serializers.SerializerMethodField()
-
-    def get_logo(self, obj):
-        return build_versatileimagefield_url_set(obj.logo, obj.sizes, self.context.get('request'))
+    # logo = serializers.ReadOnlyField(source='logo_set')
 
     def get_network_institutes(self, obj):
         return InstituteMinSerializer(obj.network_institutes.prefetch_related('programs'), many=True, context=self.context).data
@@ -58,7 +51,7 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institute
         fields = (
-            'name', 'slug', 'cover_image', 'logo', 'boards', 'verified', 'description', 'recent_awards', 'awards_count',
+            'name', 'slug', 'cover_image', 'logo_set', 'boards', 'verified', 'description', 'recent_awards', 'awards_count',
             'documents', 'established', 'address', 'district', 'type', 'phone', 'email', 'website', 'images', 'salient_features',
             'admission_guidelines', 'scholarship_information', 'network_institutes', 'levels', 'programs', 'institute_personnels',
             'latitude', 'longitude')

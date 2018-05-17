@@ -27,3 +27,5 @@ ELASTICSEARCH_DSL={
         'hosts': 'elastic:9200'
     },
 }
+
+BASE_URL = 'https://edusanjal.com'

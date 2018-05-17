@@ -4,7 +4,9 @@ from django.db import models
 
 from froala_editor.fields import FroalaField
 from versatileimagefield.fields import VersatileImageField
+from versatileimagefield.utils import build_versatileimagefield_url_set
 
+from edusanjal.lib.image import create_set
 from edusanjal.lib.models import PointModel
 from edusanjal.lib.slug import SlugModel
 from .nepal import DISTRICT_PAIRS
@@ -92,6 +94,10 @@ class Institute(PointModel, SlugModel):
             ('small', 'crop__{}x{}'.format(100, 100))
         ]
         return ret
+
+    @property
+    def logo_set(self):
+        return create_set(self.logo, self.sizes)
 
     @property
     def recent_awards(self):
