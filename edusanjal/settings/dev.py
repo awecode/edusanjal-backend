@@ -47,3 +47,9 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:3000',
     '192.168.0.143:3000'
 )
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}

@@ -2,7 +2,7 @@ import os
 from .base import PROJECT_ROOT, CONTEXT_PROCESSORS, TEMPLATE_LOADERS
 
 ALLOWED_HOSTS = ['edusanjal.com']
-STATIC_URL = 'https://cdn.awecode.com/ead/'
+STATIC_URL = 'https://cdn.awecode.com/ed/'
 
 AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
                             {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
@@ -21,3 +21,9 @@ TEMPLATES = [{
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'elastic:9200'
+    },
+}

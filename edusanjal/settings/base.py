@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'versatileimagefield',
     'corsheaders',
     'froala_editor',
+    'django_elasticsearch_dsl',
 
     'apps.program',
     'apps.institute',

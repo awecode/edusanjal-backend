@@ -7,3 +7,4 @@ djangorestframework
 pyresttest
 django-cors-headers
 django-froala-editor
+django-elasticsearch-dsl
