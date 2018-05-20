@@ -76,6 +76,7 @@ JET_CHANGE_FORM_SIBLING_LINKS = False
 CORS_ORIGIN_WHITELIST = (
     'edusanjal.com',
     'uat.edusanjal.com',
+    'api.edusanjal.com',
 )
 
 REST_FRAMEWORK = {
