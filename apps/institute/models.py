@@ -83,6 +83,11 @@ class Institute(PointModel, SlugModel):
     programs = models.ManyToManyField(Program, through='InstituteProgram', related_name='institutes')
     awards = models.ManyToManyField(Award, through='InstituteAward', related_name='institutes')
     personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
+    
+    @classmethod
+    def get(cls, slug):
+        from .serializers import InstituteDetailSerializer
+        return InstituteDetailSerializer(cls.objects.get(slug=slug)).data
 
     def __str__(self):
         return self.name

@@ -5,8 +5,7 @@ from apps.institute import api as institute_api
 
 router = DefaultRouter()
 
-router.register(r'institutes', institute_api.InstituteViewSet)
+# router.register(r'institutes', institute_api.InstituteViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls))
-]
+    url(r'^institutes/(?P<slug>[\w-]+)/$', institute_api.institute_detail),]

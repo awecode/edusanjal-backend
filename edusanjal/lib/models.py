@@ -13,5 +13,9 @@ class PointModel(models.Model):
     def longitude(self):
         return self.point.x if self.point else None
 
+    @property
+    def coordinate(self):
+        return {'lat': self.point.y, 'lon': self.point.x} if self.point else None
+
     class Meta:
         abstract = True

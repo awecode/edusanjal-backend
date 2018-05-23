@@ -1,4 +1,4 @@
-from django_elasticsearch_dsl import DocType, Index, fields
+from django_elasticsearch_dsl import DocType, Index, fields, GeoPointField
 
 from .models import Institute
 
@@ -14,10 +14,11 @@ institute.settings(
 class InstituteDoc(DocType):
     description = fields.TextField()
     logo_set = fields.ObjectField(attr='logo_set')
+    coordinate = GeoPointField(attr='coordinate')
 
     class Meta:
         model = Institute
 
         fields = [
-            'slug', 'name'
+            'slug', 'name',
         ]
