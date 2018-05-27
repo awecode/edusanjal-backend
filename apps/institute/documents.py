@@ -25,5 +25,5 @@ class InstituteDoc(DocType):
         model = Institute
 
         fields = [
-            'slug', 'name', 'short_name', 'address', 'district', 'ugc_accreditation', 'verified', 'type'
+            'slug', 'name', 'short_name', 'address', 'district', 'ugc_accreditation', 'verified', 'type', 'featured', 'is_member'
         ]
