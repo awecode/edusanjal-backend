@@ -1,6 +1,8 @@
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
 from versatileimagefield.utils import build_versatileimagefield_url_set
 
+from apps.institute.documents import InstituteDoc
 from ..program.serializers import BoardMinSerializer, ProgramMinSerializer
 from .models import Institute, Award, InstituteDocument, InstituteImage
 
@@ -29,7 +31,6 @@ class InstituteImageSerializer(serializers.ModelSerializer):
 
 
 class InstituteMinSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Institute
         fields = ('name', 'logo_set', 'slug', 'levels')
@@ -55,3 +56,9 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
             'documents', 'established', 'address', 'district', 'type', 'phone', 'email', 'website', 'images', 'salient_features',
             'admission_guidelines', 'scholarship_information', 'network_institutes', 'levels', 'programs', 'institute_personnels',
             'latitude', 'longitude')
+
+
+class InstituteDocSerializer(DocumentSerializer):
+    class Meta:
+        document = InstituteDoc
+        fields = ('name', 'logo_set', 'slug', 'levels')

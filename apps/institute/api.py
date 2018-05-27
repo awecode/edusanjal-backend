@@ -1,4 +1,6 @@
 from django.http import JsonResponse
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
+from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
 from elasticsearch_dsl import SF
 from elasticsearch_dsl.query import FunctionScore
 from rest_framework.decorators import api_view
@@ -6,7 +8,8 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 
 from apps.institute.documents import InstituteDoc
-from edusanjal.lib.api import DetailView
+from apps.institute.serializers import InstituteDocSerializer
+from edusanjal.lib.api import DetailView, DocList
 from .models import Institute
 # from .serializers import InstituteDetailSerializer, InstituteMinSerializer
 
@@ -47,3 +50,8 @@ def institute_detail(request, slug, format=None):
         #     print(hit.coordinate)
         #     print(hit.meta.score)
         # return JsonResponse({})
+
+
+class InstituteList(DocList):
+    document = InstituteDoc
+    serializer_class = InstituteDocSerializer

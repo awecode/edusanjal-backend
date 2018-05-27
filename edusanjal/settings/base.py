@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'froala_editor',
     'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 
     'apps.program',
     'apps.institute',
