@@ -8,7 +8,7 @@ from versatileimagefield.fields import VersatileImageField
 from versatileimagefield.utils import build_versatileimagefield_url_set
 
 from edusanjal.lib.image import create_set
-from edusanjal.lib.models import PointModel
+from edusanjal.lib.models import PointModel, StartEndModel
 from edusanjal.lib.slug import SlugModel
 from .nepal import DISTRICT_PAIRS
 from ..program.models import Board, Program
@@ -183,16 +183,14 @@ class InstituteProgram(models.Model):
     time_slot = models.CharField(max_length=255, blank=True, null=True)
 
 
-class Feature(models.Model):
+class Feature(StartEndModel):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='features')
-    start = models.DateField()
-    end = models.DateField()
 
-    @property
-    def active(self):
-        if self.start and self.end:
-            return self.start <= datetime.date.today() <= self.end
-        return False
+    def save(self, *args, **kwargs):
+        if (self.institute.featured != self.active):
+            self.institute.featured = self.active
+            self.institute.save()
+        super().save(*args, **kwargs)
 
 
 MEMBERSHIPS = (
@@ -200,17 +198,15 @@ MEMBERSHIPS = (
 )
 
 
-class Membership(models.Model):
+class Membership(StartEndModel):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='memberships')
-    start = models.DateField()
-    end = models.DateField()
     plan = models.CharField(max_length=20, choices=MEMBERSHIPS)
 
-    @property
-    def active(self):
-        if self.start and self.end:
-            return self.start <= datetime.date.today() <= self.end
-        return False
+    def save(self, *args, **kwargs):
+        if (self.institute.is_member != self.active):
+            self.institute.is_member = self.active
+            self.institute.save()
+        super().save(*args, **kwargs)
 
 
 class InstitutePersonnel(models.Model):

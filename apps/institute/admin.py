@@ -52,6 +52,7 @@ class FeatureInline(admin.TabularInline):
 class InstituteAdmin(admin.ModelAdmin):
     form = InstituteForm
     inlines = [ImageInline, DocumentInline, InstituteProgramInline, InstitutePersonnelInline, MembershipInline, FeatureInline]
+    readonly_fields = ['featured', 'is_member']
     exclude = ['images', 'documents']
 
 

@@ -12,6 +12,7 @@ institute.settings(
 
 @institute.doc_type
 class InstituteDoc(DocType):
+    # TODO Add html-strip analyzer
     description = fields.TextField()
     logo_set = fields.ObjectField(attr='logo_set')
     coordinate = GeoPointField(attr='coordinate')
