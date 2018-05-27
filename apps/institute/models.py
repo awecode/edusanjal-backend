@@ -119,6 +119,26 @@ class Institute(PointModel, SlugModel):
     def awards_count(self):
         return self.awards.count()
 
+    def compute_featured(self):
+        featured = False
+        for feature in self.features.all():
+            featured = featured or feature.active
+            if featured:
+                break
+        if self.featured != featured:
+            self.featured = featured
+            self.save()
+
+    def compute_is_member(self):
+        is_member = False
+        for membership in self.memberships.all():
+            is_member = is_member or membership.active
+            if is_member:
+                break
+        if self.is_member != is_member:
+            self.is_member = is_member
+            self.save()
+
 
 class InstituteImage(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='images')
@@ -187,10 +207,12 @@ class Feature(StartEndModel):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='features')
 
     def save(self, *args, **kwargs):
-        if (self.institute.featured != self.active):
-            self.institute.featured = self.active
-            self.institute.save()
         super().save(*args, **kwargs)
+        self.institute.compute_featured()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.institute.compute_featured()
 
 
 MEMBERSHIPS = (
@@ -203,10 +225,12 @@ class Membership(StartEndModel):
     plan = models.CharField(max_length=20, choices=MEMBERSHIPS)
 
     def save(self, *args, **kwargs):
-        if (self.institute.is_member != self.active):
-            self.institute.is_member = self.active
-            self.institute.save()
         super().save(*args, **kwargs)
+        self.institute.compute_is_member()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.institute.compute_is_member()
 
 
 class InstitutePersonnel(models.Model):
