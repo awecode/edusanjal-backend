@@ -759,11 +759,14 @@ class Command(BaseCommand):
             except Exception as e:
                 institute = None
             if institute:
-                _institute_image, institute_image_created = InstituteImage.objects.get_or_create(
-                    name=gallery.caption,
-                    institute=institute,
-                    file=gallery.image,
-                )
+                try:
+                    _institute_image, institute_image_created = InstituteImage.objects.get_or_create(
+                        name=gallery.caption,
+                        institute=institute,
+                        file=gallery.image,
+                    )
+                except Exception as e:
+                    pass
 
 
             percent = int(float(cnt) * 100 / institute_image_count)
