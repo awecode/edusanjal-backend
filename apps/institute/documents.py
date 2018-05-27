@@ -20,6 +20,10 @@ class InstituteDoc(DocType):
         'slug': fields.TextField(),
         'name': fields.TextField(),
     })
+    is_community = fields.KeywordField()
+
+    def prepare_is_community(self, instance):
+        return instance.type == 'Community'
 
     class Meta:
         model = Institute

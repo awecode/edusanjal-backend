@@ -1,11 +1,9 @@
-import datetime
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from froala_editor.fields import FroalaField
 from versatileimagefield.fields import VersatileImageField
-from versatileimagefield.utils import build_versatileimagefield_url_set
 
 from edusanjal.lib.image import create_set
 from edusanjal.lib.models import PointModel, StartEndModel

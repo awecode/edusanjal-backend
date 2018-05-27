@@ -1,4 +1,6 @@
 from django.http import JsonResponse
+from django_elasticsearch_dsl_drf.filter_backends import FilteringFilterBackend, OrderingFilterBackend, \
+    DefaultOrderingFilterBackend, SearchFilterBackend
 from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
 from elasticsearch_dsl import SF
@@ -55,3 +57,10 @@ def institute_detail(request, slug, format=None):
 class InstituteList(DocList):
     document = InstituteDoc
     serializer_class = InstituteDocSerializer
+    filter_backends = [
+        # FilteringFilterBackend,
+        # OrderingFilterBackend,
+        DefaultOrderingFilterBackend,
+        SearchFilterBackend,
+    ]
+    ordering = ('-featured', '-is_member', '-verified', '-is_community')
