@@ -63,10 +63,12 @@ class Institute(PointModel, SlugModel):
     admission_guidelines = FroalaField(blank=True, null=True)
     scholarship_information = FroalaField(blank=True, null=True)
 
-    ugc_accredition = models.BooleanField(default=False, verbose_name='UGC Accredition')
-    published = models.BooleanField(default=True)
-    verified = models.BooleanField(default=False)
     type = models.CharField(max_length=20, choices=INSTITUTE_TYPES, default='Private')
+    published = models.BooleanField(default=True)
+    ugc_accreditation = models.BooleanField(default=False, verbose_name='UGC Accreditation')
+    verified = models.BooleanField(default=False)
+    is_member = models.BooleanField(default=False, editable=False)
+    featured = models.BooleanField(default=False, editable=False)
 
     has_building = models.BooleanField(default=False, verbose_name='Does the college own its building?')
     no_of_buildings = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -216,7 +218,7 @@ class InstitutePersonnel(models.Model):
     designation = models.ForeignKey(Designation, on_delete=models.CASCADE)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_personnels')
     message = FroalaField(blank=True, null=True)
-    
+
     def __str__(self):
         return '{} - {}'.format(self.personnel, self.designation)
 

@@ -15,10 +15,14 @@ class InstituteDoc(DocType):
     description = fields.TextField()
     logo_set = fields.ObjectField(attr='logo_set')
     coordinate = GeoPointField(attr='coordinate')
+    boards = fields.NestedField(properties={
+        'slug': fields.TextField(),
+        'name': fields.TextField(),
+    })
 
     class Meta:
         model = Institute
 
         fields = [
-            'slug', 'name',
+            'slug', 'name', 'short_name', 'address', 'district', 'ugc_accreditation', 'verified', 'type'
         ]
