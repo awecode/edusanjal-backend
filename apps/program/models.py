@@ -9,13 +9,14 @@ from edusanjal.lib.slug import SlugModel
 
 
 class Faculty(SlugModel):
-    pass
+    previous_db_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Faculties'
 
 
 class Board(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     short_name = models.CharField(max_length=15, blank=True, null=True)
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
@@ -50,6 +51,8 @@ class BoardDocument(models.Model):
 
 
 class Discipline(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
+    full_name = models.CharField(max_length=255, blank=True, null=True)
     description = FroalaField(blank=True, null=True)
 
 
@@ -66,6 +69,13 @@ class Level:
 
 
 class Council(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
+    short_name = models.CharField(max_length=10, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    logo = VersatileImageField(upload_to='councils/', blank=True, null=True)
+    email = models.EmailField(max_length=100, blank=True, null=True)
+    phone = models.CharField(max_length=100, blank=True, null=True)
+    website = models.URLField(max_length=100, blank=True, null=True)
     description = FroalaField(blank=True, null=True)
 
 
@@ -85,6 +95,7 @@ class CouncilDocument(models.Model):
 
 
 class Program(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     short_name = models.CharField(max_length=255, blank=True, null=True)
     level = models.CharField(max_length=30, choices=Level.LEVELS_PAIR)

@@ -12,6 +12,7 @@ from ..program.models import Board, Program
 
 
 class Personnel(models.Model):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     prefix = models.CharField(max_length=10, blank=True, null=True)
     name = models.CharField(max_length=255)
     photo = VersatileImageField(upload_to='personnels/')
@@ -21,6 +22,7 @@ class Personnel(models.Model):
 
 
 class Designation(models.Model):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     is_founder = models.BooleanField(default=False)
 
@@ -36,11 +38,13 @@ INSTITUTE_TYPES = (
 
 
 class Award(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     description = FroalaField()
     image = VersatileImageField(blank=True, null=True, upload_to='awards/')
 
 
 class Institute(PointModel, SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     short_name = models.CharField(max_length=15, blank=True, null=True)
     established = models.PositiveSmallIntegerField(validators=[MinValueValidator(1700), MaxValueValidator(2050)], blank=True,
                                                    null=True)
@@ -142,7 +146,7 @@ class InstituteImage(models.Model):
 
 class InstituteDocument(models.Model):
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='documents')
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
     file = models.FileField(upload_to='institute_documents/')
 
     def __str__(self):
@@ -204,18 +208,22 @@ class Admission(SlugModel):
 
 
 class ScholarshipCategory(models.Model):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
 
 
 class Scholarship(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     starts_on = models.DateField(blank=True, null=True)
     ends_on = models.DateField(blank=True, null=True)
+    description = FroalaField(blank=True, null=True)
     categories = models.ManyToManyField(ScholarshipCategory)
     institutes = models.ManyToManyField(Institute, blank=True)
 
 
 class Ranking(SlugModel):
+    previous_db_id = models.IntegerField(blank=True, null=True)
     description = FroalaField()
 
 
@@ -224,3 +232,5 @@ class Rank(models.Model):
     position = models.PositiveSmallIntegerField(default=1)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     remarks = models.CharField(max_length=255, blank=True, null=True)
+    size = models.IntegerField(null=True, blank=True)
+

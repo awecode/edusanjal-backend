@@ -208,7 +208,7 @@ class Command(BaseCommand):
                         session.query(_UniversityCategory).filter_by(university_id=university.id)]
             faculties = [Faculty.objects.get(previous_db_id=uni_faculty.faculty_id) for uni_faculty in
                          session.query(_UniversityFaculty).filter_by(university_id=university.id)]
-            international = None
+            international = False
             if category:
                 international = category[0].title in ['International University']
             established = None
@@ -470,6 +470,8 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 college_university = []
 
+            type = college.type.title() if college.type else ''
+
             try:
                 _college, _college_created = Institute.objects.get_or_create(
                     previous_db_id=college.id,
@@ -486,6 +488,7 @@ class Command(BaseCommand):
                     has_building=college.building_ownership,
                     has_land=college.land_ownership,
                     land=college.land_area,
+                    type=type,
                     class_capacity=college.class_size,
                 )
                 get_set_value(
@@ -500,7 +503,6 @@ class Command(BaseCommand):
                         'salient_features',
                         'admission_guidelines',
                         'scholarship_information',
-                        'type',
                         'no_of_buildings',
                         'no_of_rooms',
                         'total_staffs',
@@ -670,11 +672,12 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 scholarship_categories = []
 
+            institute = None
             if scholarship.college_id:
                 try:
                     institute = Institute.objects.get(previous_db_id=scholarship.college_id)
                 except ObjectDoesNotExist:
-                    institute = None
+                    pass
             try:
                 _scholarship, _scholarship_created = Scholarship.objects.get_or_create(
                     name=scholarship.title,
@@ -683,7 +686,9 @@ class Command(BaseCommand):
                     ends_on=scholarship.ends_on,
                     description=scholarship.description
                 )
-                institutes = [institute]
+                institutes = []
+                if institute:
+                    institutes = [institute]
                 _scholarship.categories.add(*scholarship_categories)
                 _scholarship.institutes.add(*institutes)
                 _scholarship.save()
@@ -712,7 +717,7 @@ class Command(BaseCommand):
                 _rank, _rank_created = Rank.objects.get_or_create(
                     rank=ranking,
                     position=rank.rank,
-                    institute=institute,
+                    institute=college,
                     size=rank.size,
                 )
                 _rank.created_on = rank.created_on
@@ -742,7 +747,7 @@ class Command(BaseCommand):
             percent = int(float(cnt) * 100 / institute_document_count)
             show_progress(percent)
 
-        self.stdout.write("Institute Document imported")
+        # self.stdout.write("Institute Document imported")
 
         ###### Save College Image ###########
 
@@ -753,9 +758,6 @@ class Command(BaseCommand):
                 institute = Institute.objects.get(previous_db_id=gallery.college_id)
             except Exception as e:
                 institute = None
-            print(institute)
-            print(gallery.caption)
-            print(gallery.image)
             if institute:
                 _institute_image, institute_image_created = InstituteImage.objects.get_or_create(
                     name=gallery.caption,
@@ -767,7 +769,7 @@ class Command(BaseCommand):
             percent = int(float(cnt) * 100 / institute_image_count)
             show_progress(percent)
 
-        self.stdout.write("Institute Document imported")
+        self.stdout.write("Institute Image imported")
 
         ###### Save Admission ###########
 
