@@ -216,6 +216,9 @@ class InstitutePersonnel(models.Model):
     designation = models.ForeignKey(Designation, on_delete=models.CASCADE)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='institute_personnels')
     message = FroalaField(blank=True, null=True)
+    
+    def __str__(self):
+        return '{} - {}'.format(self.personnel, self.designation)
 
 
 class Admission(SlugModel):

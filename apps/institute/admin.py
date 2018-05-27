@@ -1,4 +1,5 @@
 from django.contrib import admin
+from jet.admin import CompactInline
 
 from edusanjal.lib.forms import StartEndForm
 from .forms import InstituteForm
@@ -26,7 +27,7 @@ class DocumentInline(admin.TabularInline):
     verbose_name_plural = 'Documents'
 
 
-class InstitutePersonnelInline(admin.TabularInline):
+class InstitutePersonnelInline(CompactInline):
     model = InstitutePersonnel
     verbose_name = 'Personnel'
     verbose_name_plural = 'Personnels'
