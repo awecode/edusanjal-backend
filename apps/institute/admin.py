@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from edusanjal.lib.forms import StartEndForm
 from .forms import InstituteForm
 from apps.program.models import Program
 from .models import Institute, Personnel, Designation, Award, InstituteAward, InstitutePersonnel, InstituteProgram, Feature, \
@@ -31,9 +32,25 @@ class InstitutePersonnelInline(admin.TabularInline):
     verbose_name_plural = 'Personnels'
 
 
+class MembershipInline(admin.TabularInline):
+    model = Membership
+    verbose_name = 'Membership'
+    verbose_name_plural = 'Memberships'
+    readonly_fields = ['active', ]
+    form = StartEndForm
+
+
+class FeatureInline(admin.TabularInline):
+    model = Feature
+    verbose_name = 'Feature'
+    verbose_name_plural = 'Features'
+    readonly_fields = ['active', ]
+    form = StartEndForm
+
+
 class InstituteAdmin(admin.ModelAdmin):
     form = InstituteForm
-    inlines = [ImageInline, DocumentInline, InstituteProgramInline, InstitutePersonnelInline]
+    inlines = [ImageInline, DocumentInline, InstituteProgramInline, InstitutePersonnelInline, MembershipInline, FeatureInline]
     exclude = ['images', 'documents']
 
 

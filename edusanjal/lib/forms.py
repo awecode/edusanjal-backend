@@ -32,3 +32,13 @@ class PointForm(forms.ModelForm):
         if latitude and longitude and not point:
             data['point'] = Point(longitude, latitude)
         return data
+
+class StartEndForm(forms.ModelForm):
+    def clean(self):
+        start = self.cleaned_data.get('start')
+        end = self.cleaned_data.get('end')
+        if end and start:
+            if end < start:
+                msg = u'End date should be greater than start date.'
+                self._errors['end'] = self.error_class([msg])
+        return self.cleaned_data

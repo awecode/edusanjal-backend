@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -83,7 +84,7 @@ class Institute(PointModel, SlugModel):
     programs = models.ManyToManyField(Program, through='InstituteProgram', related_name='institutes')
     awards = models.ManyToManyField(Award, through='InstituteAward', related_name='institutes')
     personnels = models.ManyToManyField(Personnel, through='InstitutePersonnel', related_name='institutes')
-    
+
     @classmethod
     def get(cls, slug):
         from .serializers import InstituteDetailSerializer
@@ -181,9 +182,15 @@ class InstituteProgram(models.Model):
 
 
 class Feature(models.Model):
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='features')
     start = models.DateField()
     end = models.DateField()
+
+    @property
+    def active(self):
+        if self.start and self.end:
+            return self.start <= datetime.date.today() <= self.end
+        return False
 
 
 MEMBERSHIPS = (
@@ -192,10 +199,16 @@ MEMBERSHIPS = (
 
 
 class Membership(models.Model):
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE, related_name='memberships')
     start = models.DateField()
     end = models.DateField()
     plan = models.CharField(max_length=20, choices=MEMBERSHIPS)
+
+    @property
+    def active(self):
+        if self.start and self.end:
+            return self.start <= datetime.date.today() <= self.end
+        return False
 
 
 class InstitutePersonnel(models.Model):

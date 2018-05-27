@@ -81,7 +81,7 @@ CORS_ORIGIN_WHITELIST = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'edusanjal.lib.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2
+    'PAGE_SIZE': 5
 }
 
 FROALA_EDITOR_THIRD_PARTY = ('image_aviary', 'spell_checker')
