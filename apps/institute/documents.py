@@ -14,13 +14,16 @@ institute.settings(
 class InstituteDoc(DocType):
     # TODO Add html-strip analyzer
     description = fields.TextField()
-    logo_set = fields.ObjectField(attr='logo_set')
+    logo_set = fields.ObjectField()
     coordinate = GeoPointField(attr='coordinate')
     boards = fields.NestedField(properties={
         'slug': fields.TextField(),
         'name': fields.TextField(),
     })
     is_community = fields.KeywordField()
+
+    def prepare_logo_set(self, instance):
+        return instance.logo_set
 
     def prepare_is_community(self, instance):
         return instance.type == 'Community'
