@@ -18,16 +18,16 @@ from .models import Institute
 from rest_framework.views import APIView
 
 
-@api_view(['GET'])
-def institute_detail(request, slug, format=None):
+class InstituteDetail(APIView):
     """
-    Retrieve an institute detail
+        Retrieve an institute detail
     """
 
-    try:
-        return Response(Institute.get(slug))
-    except Institute.DoesNotExist:
-        return Response(status=400)
+    def get(self, request, *args, **kwargs):
+        try:
+            return Response(Institute.get(kwargs.get('slug'), request))
+        except Institute.DoesNotExist:
+            return Response(status=400)
 
 
 class InstituteList(DocList):
