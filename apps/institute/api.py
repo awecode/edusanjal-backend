@@ -1,9 +1,12 @@
-from rest_framework import viewsets
+from rest_framework.mixins import ListModelMixin
 
+from edusanjal.lib.api import DetailView
 from .models import Institute
-from .serializers import InstituteSerializer
+from .serializers import InstituteDetailSerializer, InstituteMinSerializer
 
 
-class InstituteViewSet(viewsets.ReadOnlyModelViewSet):
+class InstituteViewSet(ListModelMixin, DetailView):
     queryset = Institute.objects.all()
-    serializer_class = InstituteSerializer
+
+    def get_serializer_class(self):
+        return InstituteMinSerializer if self.action == 'list' else InstituteDetailSerializer

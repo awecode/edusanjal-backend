@@ -5,3 +5,5 @@ django-versatileimagefield
 django-jet
 djangorestframework
 pyresttest
+django-cors-headers
+django-froala-editor

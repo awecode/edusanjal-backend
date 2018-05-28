@@ -3,25 +3,33 @@ import os
 PROJECT_ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 INSTALLED_APPS = [
+    # For overriding templates
+    'django.contrib.auth',
+    'apps.users',
+
     'jet',
     'django.contrib.admin',
-    'django.contrib.auth',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
 
     'rest_framework',
+    'versatileimagefield',
+    'corsheaders',
+    'froala_editor',
 
     'apps.program',
     'apps.institute',
-    'apps.media',
-    'apps.users',
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,3 +70,18 @@ TIME_ZONE = 'Asia/Kathmandu'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+JET_CHANGE_FORM_SIBLING_LINKS = False
+
+CORS_ORIGIN_WHITELIST = (
+    'edusanjal.com',
+    'uat.edusanjal.com',
+    'api.edusanjal.com',
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'edusanjal.lib.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2
+}
+
+FROALA_EDITOR_THIRD_PARTY = ('image_aviary', 'spell_checker')
