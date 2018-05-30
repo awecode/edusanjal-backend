@@ -1,3 +1,5 @@
+from time import sleep
+
 from django.http import JsonResponse
 from django_elasticsearch_dsl_drf.filter_backends import FilteringFilterBackend, OrderingFilterBackend, \
     DefaultOrderingFilterBackend, SearchFilterBackend
@@ -34,9 +36,12 @@ class InstituteList(DocList):
     document = InstituteDoc
     serializer_class = InstituteDocSerializer
     filter_backends = [
-        # FilteringFilterBackend,
+        FilteringFilterBackend,
         # OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
     ]
     ordering = ('-featured', '-is_member', '-verified', '-is_community')
+    filter_fields = {
+        'type': 'type.raw'
+    }

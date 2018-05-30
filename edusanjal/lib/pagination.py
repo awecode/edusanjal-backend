@@ -10,10 +10,12 @@ class PageNumberPagination(BasePageNumberPagination):
         count = self.page.paginator.count
         size = self.page_size
         return {
-            'next': self.get_next_link(),
-            'previous': self.get_previous_link(),
-            'count': count,
-            'page': self.page.number,
-            'pages': (count + (-count % size)) // size,  # round-up division
+            'pagination': {
+                # 'next': self.get_next_link(),
+                # 'previous': self.get_previous_link(),
+                'count': count,
+                'page': self.page.number,
+                'pages': (count + (-count % size)) // size,  # round-up division
+            },
             'results': data
         }
