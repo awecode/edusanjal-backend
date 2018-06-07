@@ -5,8 +5,15 @@ from rest_framework.response import Response
 class PageNumberPagination(BasePageNumberPagination):
     def get_paginated_response(self, data, aggregations=None):
         trimmed_aggregations = {}
-        for key, value in aggregations.items():
-            trimmed_aggregations[key] = value.get('buckets')
+        # local aggregation
+        # aggregate = aggregations
+        # global aggregation with bucket count
+        aggregate = aggregations.get('count')
+        for key, value in aggregate.items():
+            if type(value) == dict and 'buckets' in value.keys():
+                trimmed_aggregations[key] = value.get('buckets')
+            else:
+                trimmed_aggregations[key] = value
         return Response(self.get_response_data(data, trimmed_aggregations))
 
     def get_response_data(self, data, aggregations):

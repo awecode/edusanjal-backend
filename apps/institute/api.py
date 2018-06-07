@@ -49,10 +49,16 @@ class InstituteList(DocList):
 
     def get_queryset(self):
         """Get queryset."""
-        from elasticsearch_dsl import A
         search = self.search
-        a = A('terms', field='district')
-        search.aggs.bucket('districts', a)
+
+        # local aggregation
+        # from elasticsearch_dsl import A
+        # a = A('terms', field='district')
+        # search.aggs.bucket('districts', a)
+
+        # global aggregation
+        search.aggs.bucket('count', 'global').metric('districts', 'terms', field='district')
+
         return search.query()
 
     def list(self, request, *args, **kwargs):
