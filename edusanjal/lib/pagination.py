@@ -9,11 +9,12 @@ class PageNumberPagination(BasePageNumberPagination):
         # aggregate = aggregations
         # global aggregation with bucket count
         aggregate = aggregations.get('count')
-        for key, value in aggregate.items():
-            if type(value) == dict and 'buckets' in value.keys():
-                trimmed_aggregations[key] = value.get('buckets')
-            else:
-                trimmed_aggregations[key] = value
+        if aggregate:
+            for key, value in aggregate.items():
+                if type(value) == dict and 'buckets' in value.keys():
+                    trimmed_aggregations[key] = value.get('buckets')
+                else:
+                    trimmed_aggregations[key] = value
         return Response(self.get_response_data(data, trimmed_aggregations))
 
     def get_response_data(self, data, aggregations):
