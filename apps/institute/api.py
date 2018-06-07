@@ -44,5 +44,5 @@ class InstituteList(DocList):
 
     # global aggregation
     def transform_search(self, search):
-        search.aggs.bucket('count', 'global').metric('districts', 'terms', field='district')
+        search.aggs.bucket('count', 'global').metric('districts', 'terms', field='district').metric('types', 'terms', field='type')
         return search
