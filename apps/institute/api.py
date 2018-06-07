@@ -43,5 +43,26 @@ class InstituteList(DocList):
     ]
     ordering = ('-featured', '-is_member', '-verified', '-is_community')
     filter_fields = {
-        'type': 'type.raw'
+        'type': 'type.raw',
+        'district': 'district.raw',
     }
+
+    def get_queryset(self):
+        """Get queryset."""
+        from elasticsearch_dsl import A
+        search = self.search
+        a = A('terms', field='district')
+        search.aggs.bucket('districts', a)
+        return search.query()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        qs = list(queryset)
+        page = self.paginate_queryset(qs)
+        aggregations = queryset._response.aggregations.to_dict()
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            paginated_data = self.paginator.get_paginated_response(serializer.data, aggregations)
+            return paginated_data
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
