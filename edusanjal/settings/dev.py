@@ -1,4 +1,6 @@
 import os
+import logging
+
 from .base import PROJECT_ROOT, CONTEXT_PROCESSORS, TEMPLATE_LOADERS, INSTALLED_APPS, MIDDLEWARE
 
 SECRET_KEY = '12345'
@@ -48,10 +50,14 @@ CORS_ORIGIN_WHITELIST = (
     '192.168.0.143:3000'
 )
 
-ELASTICSEARCH_DSL={
+ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'localhost:9200'
     },
 }
 
 BASE_URL = 'http://127.0.0.1:8000'
+
+logging.basicConfig()
+logging.getLogger('elasticsearch').setLevel(logging.DEBUG)
+logging.getLogger('urllib3').setLevel(logging.DEBUG)
