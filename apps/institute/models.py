@@ -65,7 +65,7 @@ class Institute(PointModel, SlugModel):
     published = models.BooleanField(default=True)
     ugc_accreditation = models.BooleanField(default=False, verbose_name='UGC Accreditation')
     verified = models.BooleanField(default=False)
-    is_member = models.BooleanField(default=False, editable=False)
+    membership = models.CharField(null=True, editable=False, max_length=20)
     featured = models.BooleanField(default=False, editable=False)
 
     has_building = models.BooleanField(default=False, verbose_name='Does the college own its building?')
@@ -127,14 +127,14 @@ class Institute(PointModel, SlugModel):
             self.featured = featured
             self.save()
 
-    def compute_is_member(self):
-        is_member = False
+    def compute_membership(self):
+        plan = None
         for membership in self.memberships.all():
-            is_member = is_member or membership.active
-            if is_member:
+            if membership.active:
+                plan = membership.plan
                 break
-        if self.is_member != is_member:
-            self.is_member = is_member
+        if self.membership != plan:
+            self.membership = plan
             self.save()
 
 
@@ -215,6 +215,7 @@ class Feature(StartEndModel):
 
 MEMBERSHIPS = (
     ('Premium', 'Premium'),
+    ('Standard', 'Standard'),
 )
 
 
@@ -224,11 +225,11 @@ class Membership(StartEndModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.institute.compute_is_member()
+        self.institute.compute_membership()
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
-        self.institute.compute_is_member()
+        self.institute.compute_membership()
 
 
 class InstitutePersonnel(models.Model):

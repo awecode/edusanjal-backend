@@ -51,11 +51,11 @@ class FeatureInline(admin.TabularInline):
 
 class InstituteAdmin(admin.ModelAdmin):
     search_fields = ['name', 'slug']
-    list_filter = ['verified', 'is_member', 'featured', 'published', 'boards', 'ugc_accreditation', 'district', 'type']
-    list_display = ['name', 'slug', 'verified', 'is_member', 'featured']
+    list_filter = ['verified', 'membership', 'featured', 'published', 'boards', 'ugc_accreditation', 'district', 'type']
+    list_display = ['name', 'slug', 'verified', 'membership', 'featured']
     form = InstituteForm
     inlines = [ImageInline, DocumentInline, InstituteProgramInline, InstitutePersonnelInline, MembershipInline, FeatureInline]
-    readonly_fields = ['featured', 'is_member']
+    readonly_fields = ['featured', 'membership']
     exclude = ['images', 'documents']
 
 
