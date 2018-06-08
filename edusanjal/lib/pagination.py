@@ -3,21 +3,27 @@ from rest_framework.response import Response
 
 
 class PageNumberPagination(BasePageNumberPagination):
-    def get_paginated_response(self, data, aggregations=None):
-        trimmed_aggregations = {}
-        # local aggregation
-        # aggregate = aggregations
-        # global aggregation with bucket count
-        aggregate = aggregations.get('count')
-        if aggregate:
-            for key, value in aggregate.items():
-                if type(value) == dict and 'buckets' in value.keys():
-                    trimmed_aggregations[key] = value.get('buckets')
-                else:
-                    trimmed_aggregations[key] = value
-        return Response(self.get_response_data(data, trimmed_aggregations))
+    def clean_agg(self, dct):
+        agg = {}
+        for key, value in dct.items():
+            if type(value) == dict and 'buckets' in value.keys():
+                agg[key] = value.get('buckets')
+            else:
+                agg[key] = value
+        return agg
 
-    def get_response_data(self, data, aggregations):
+    def get_paginated_response(self, data, aggregations=None):
+
+        global_agg = {}
+        if 'global' in aggregations.keys():
+            global_agg = self.clean_agg(aggregations['global'])
+            del aggregations['global']
+
+        local_agg = self.clean_agg(aggregations)
+
+        return Response(self.get_response_data(data, local_agg, global_agg))
+
+    def get_response_data(self, data, local_agg={}, global_agg={}):
         count = self.page.paginator.count
         size = self.page_size
         return {
@@ -28,6 +34,7 @@ class PageNumberPagination(BasePageNumberPagination):
                 'page': self.page.number,
                 'pages': (count + (-count % size)) // size,  # round-up division
             },
-            'aggregations': aggregations,
+            'local_agg': local_agg,
+            'global_agg': global_agg,
             'results': data
         }

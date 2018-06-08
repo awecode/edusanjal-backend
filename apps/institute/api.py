@@ -36,13 +36,9 @@ class InstituteList(DocList):
         'district': 'district.raw',
     }
 
-    # # local aggregation
-    # def transform_search(self, search):
-    #     from elasticsearch_dsl import A
-    #     a = A('terms', field='district')
-    #     search.aggs.bucket('districts', a)
-
-    # global aggregation
     def transform_search(self, search):
-        search.aggs.bucket('count', 'global').metric('districts', 'terms', field='district').metric('types', 'terms', field='type')
+        search.aggs.bucket('district', 'terms', field='district')
+        search.aggs.bucket('type', 'terms', field='type')
+        # global aggregation
+        search.aggs.bucket('global', 'global').metric('district', 'terms', field='district').metric('type', 'terms', field='type')
         return search
