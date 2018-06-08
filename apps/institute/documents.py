@@ -24,6 +24,7 @@ class InstituteDoc(DocType):
 
     type = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
     district = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
+    membership = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
 
     def prepare_logo_set(self, instance):
         return instance.logo_set
@@ -35,5 +36,4 @@ class InstituteDoc(DocType):
         model = Institute
 
         fields = [
-            'slug', 'name', 'short_name', 'address', 'ugc_accreditation', 'verified', 'featured', 'membership'
-        ]
+            'slug', 'name', 'short_name', 'address', 'ugc_accreditation', 'verified', 'featured']

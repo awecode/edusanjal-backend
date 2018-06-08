@@ -30,7 +30,7 @@ class InstituteList(DocList):
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
     ]
-    ordering = ('-featured', '-membership', '-verified', '-is_community')
+    ordering = ('-featured', 'membership', '-verified', '-is_community')
     filter_fields = {
         'type': 'type.raw',
         'district': 'district.raw',
