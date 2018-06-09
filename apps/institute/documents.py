@@ -26,11 +26,31 @@ class InstituteDoc(DocType):
     district = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
     membership = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
 
+    affiliation = fields.ListField(fields.StringField)
+
     def prepare_logo_set(self, instance):
         return instance.logo_set
 
     def prepare_is_community(self, instance):
         return instance.type == 'Community'
+
+    def prepare_affiliation(self, instance):
+        international = False
+        national = False
+        for board in instance.boards.all():
+            if board.international:
+                international = True
+            else:
+                national = True
+        affiliation = []
+        if international:
+            affiliation.append('International')
+        if national:
+            affiliation.append('National')
+        return affiliation
+
+    def get_queryset(self):
+        return Institute.objects.filter(published=True).prefetch_related('boards')
 
     class Meta:
         model = Institute

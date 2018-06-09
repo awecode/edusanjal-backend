@@ -61,4 +61,4 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
 class InstituteDocSerializer(DocumentSerializer):
     class Meta:
         document = InstituteDoc
-        fields = ('name', 'logo_set', 'slug', 'address', 'verified', 'membership', 'featured', 'type', 'boards')
+        fields = ('name', 'logo_set', 'slug', 'address', 'verified', 'membership', 'featured', 'type', 'boards', 'affiliation')
