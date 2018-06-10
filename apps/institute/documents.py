@@ -22,6 +22,7 @@ class InstituteDoc(DocType):
         'name': fields.TextField(),
     })
     is_community = fields.KeywordField()
+    level = fields.KeywordField(fields={'raw': fields.ListField(fields.StringField(analyzer='keyword'))})
 
     type = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
     district = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
@@ -31,6 +32,9 @@ class InstituteDoc(DocType):
 
     def prepare_logo_set(self, instance):
         return instance.logo_set
+
+    def prepare_level(self, instance):
+        return list(instance.levels)
 
     def prepare_is_community(self, instance):
         return instance.type == 'Community'
@@ -51,7 +55,7 @@ class InstituteDoc(DocType):
         return affiliation
 
     def get_queryset(self):
-        return Institute.objects.filter(published=True).prefetch_related('boards')
+        return Institute.objects.filter(published=True).prefetch_related('boards', 'programs')
 
     def get_instances_from_related(self, related_instance):
         if isinstance(related_instance, Board):

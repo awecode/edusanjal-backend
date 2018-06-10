@@ -35,15 +35,19 @@ class InstituteList(DocList):
         'type': 'type.raw',
         'district': 'district.raw',
         'affiliation': 'affiliation.raw',
+        'level': 'level.raw',
     }
 
     def transform_search(self, search):
         search.aggs.bucket('district', 'terms', field='district')
         search.aggs.bucket('type', 'terms', field='type')
         search.aggs.bucket('affiliation', 'terms', field='affiliation')
+        search.aggs.bucket('level', 'terms', field='level')
         # global aggregation
         search.aggs.bucket('global', 'global') \
             .metric('district', 'terms', field='district') \
             .metric('type', 'terms', field='type') \
-            .metric('affiliation', 'terms', field='affiliation')
+            .metric('affiliation', 'terms', field='affiliation') \
+            .metric('level', 'terms', field='level')
+
         return search
