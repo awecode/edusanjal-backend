@@ -27,7 +27,7 @@ class InstituteDoc(DocType):
     district = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
     membership = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
 
-    affiliation = fields.ListField(fields.StringField())
+    affiliation = fields.KeywordField(fields={'raw': fields.ListField(fields.StringField(analyzer='keyword'))})
 
     def prepare_logo_set(self, instance):
         return instance.logo_set
@@ -45,9 +45,9 @@ class InstituteDoc(DocType):
                 national = True
         affiliation = []
         if international:
-            affiliation.append('International')
+            affiliation.append('International University')
         if national:
-            affiliation.append('National')
+            affiliation.append('National Board/University')
         return affiliation
 
     def get_queryset(self):
