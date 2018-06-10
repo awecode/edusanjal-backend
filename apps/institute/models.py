@@ -53,7 +53,7 @@ class Institute(PointModel, SlugModel):
     phone = ArrayField(models.CharField(max_length=100, blank=True, null=True), blank=True, null=True)
     email = ArrayField(models.EmailField(blank=True, null=True), blank=True, null=True)
     website = models.URLField(blank=True, null=True)
-    boards = models.ManyToManyField(Board, blank=True)
+    boards = models.ManyToManyField(Board, blank=True, related_name='institutes')
     network_institutes = models.ManyToManyField('self', blank=True)
 
     description = FroalaField()

@@ -1,5 +1,6 @@
 from django_elasticsearch_dsl import DocType, Index, fields, GeoPointField
 
+from ..program.models import Board
 from .models import Institute
 
 institute = Index('institutes')
@@ -26,7 +27,7 @@ class InstituteDoc(DocType):
     district = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
     membership = fields.KeywordField(fields={'raw': fields.StringField(analyzer='keyword')})
 
-    affiliation = fields.ListField(fields.StringField)
+    affiliation = fields.ListField(fields.StringField())
 
     def prepare_logo_set(self, instance):
         return instance.logo_set
@@ -52,8 +53,13 @@ class InstituteDoc(DocType):
     def get_queryset(self):
         return Institute.objects.filter(published=True).prefetch_related('boards')
 
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, Board):
+            return related_instance.institutes.all()
+
     class Meta:
         model = Institute
+        related_models = [Board]
 
         fields = [
             'slug', 'name', 'short_name', 'address', 'ugc_accreditation', 'verified', 'featured']
