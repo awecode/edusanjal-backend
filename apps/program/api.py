@@ -24,10 +24,9 @@ class ProgramList(DocList):
 
     }
 
-    def get_aggregation_order(self):
-        return {
-            'level': Level.LIST
-        }
+    aggregation_order = {
+        'level': Level.LIST
+    }
 
     def transform_search(self, search):
         search.aggs.bucket('level', 'terms', field='level')
