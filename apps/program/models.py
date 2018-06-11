@@ -62,7 +62,8 @@ class Level:
         (4, 'Masters'),
     )
 
-    LEVELS_PAIR = [(level[1], level[1]) for level in LEVELS]
+    PAIR = [(level[1], level[1]) for level in LEVELS]
+    LIST = [level[1] for level in LEVELS]
 
 
 class Council(SlugModel):
@@ -87,7 +88,7 @@ class CouncilDocument(models.Model):
 class Program(SlugModel):
     full_name = models.CharField(max_length=255, blank=True, null=True)
     short_name = models.CharField(max_length=255, blank=True, null=True)
-    level = models.CharField(max_length=30, choices=Level.LEVELS_PAIR)
+    level = models.CharField(max_length=30, choices=Level.PAIR)
     faculty = models.ForeignKey(Faculty, blank=True, null=True, on_delete=models.SET_NULL)
     board = models.ForeignKey(Board, blank=True, null=True, on_delete=models.SET_NULL)
     recognition = models.ForeignKey(Council, blank=True, null=True, on_delete=models.SET_NULL)

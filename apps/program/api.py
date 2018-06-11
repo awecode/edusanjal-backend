@@ -1,5 +1,6 @@
 from django_elasticsearch_dsl_drf.filter_backends import FilteringFilterBackend, DefaultOrderingFilterBackend, SearchFilterBackend
 
+from apps.program.models import Level
 from .serializers import ProgramDocSerializer
 from edusanjal.lib.api import DocList
 
@@ -22,6 +23,11 @@ class ProgramList(DocList):
         # 'affiliation': 'affiliation.raw',
 
     }
+
+    def get_aggregation_order(self):
+        return {
+            'level': Level.LIST
+        }
 
     def transform_search(self, search):
         search.aggs.bucket('level', 'terms', field='level')
