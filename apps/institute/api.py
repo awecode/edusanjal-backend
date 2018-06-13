@@ -51,3 +51,7 @@ class InstituteList(DocList):
             .metric('level', 'terms', field='level')
 
         return search
+
+
+class CollegeList(InstituteList):
+    pass
