@@ -12,9 +12,13 @@ class DetailView(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 class DocList(BaseDocumentViewSet):
     pagination_class = PageNumberPagination
     aggregation_order = {}
+    aggregation_skip = {}
 
     def get_aggregation_order(self):
         return self.aggregation_order
+
+    def get_aggregation_skip(self):
+        return self.aggregation_skip
 
     def transform_search(self, search):
         return search
@@ -29,7 +33,8 @@ class DocList(BaseDocumentViewSet):
         aggregations = queryset._response.aggregations.to_dict()
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            paginated_data = self.paginator.get_paginated_response(serializer.data, aggregations, self.get_aggregation_order())
+            paginated_data = self.paginator.get_paginated_response(serializer.data, aggregations, self.get_aggregation_order(),
+                                                                   self.get_aggregation_skip())
             return paginated_data
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

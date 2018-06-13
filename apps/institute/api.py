@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from apps.institute.documents import InstituteDoc
 from apps.institute.serializers import InstituteDocSerializer
+from apps.program.models import Level
 from edusanjal.lib.api import DocList
 from .models import Institute
 
@@ -38,6 +39,10 @@ class InstituteList(DocList):
         'level': 'level.raw',
     }
 
+    aggregation_order = {
+        'level': Level.LIST
+    }
+
     def transform_search(self, search):
         search.aggs.bucket('district', 'terms', field='district')
         search.aggs.bucket('type', 'terms', field='type')
@@ -54,4 +59,6 @@ class InstituteList(DocList):
 
 
 class CollegeList(InstituteList):
-    pass
+    aggregation_skip = {
+        'level': ['Pre-school', 'Primary School', 'Secondary School']
+    }
